@@ -124,10 +124,24 @@ void GLViewSpeedRacer::onKeyDown( const SDL_KeyboardEvent& key )
    if( key.keysym.sym == SDLK_0 )
       this->setNumPhysicsStepsPerRender( 1 );
 
-   if( key.keysym.sym == SDLK_1 )
+   // car accelerator
+   if( key.keysym.sym == SDLK_w )
    {
+       carSelection();
+   }
+   // move car left
+   if (key.keysym.sym == SDLK_a) {
 
    }
+   //move car right
+   if (key.keysym.sym == SDLK_d) {
+
+   }
+   // car reverses
+   if (key.keysym.sym == SDLK_s) {
+
+   }
+
 }
 
 
@@ -160,7 +174,7 @@ void Aftr::GLViewSpeedRacer::loadMap()
    std::vector< std::string > skyBoxImageNames; //vector to store texture paths
    //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_water+6.jpg" );
    //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_dust+6.jpg" );
-   skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_mountains+6.jpg" );
+   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_mountains+6.jpg" );
    //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_winter+6.jpg" );
    //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/early_morning+6.jpg" );
    //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_afternoon+6.jpg" );
@@ -175,7 +189,7 @@ void Aftr::GLViewSpeedRacer::loadMap()
    //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_noon+6.jpg" );
    //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_warp+6.jpg" );
    //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_Hubble_Nebula+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_gray_matter+6.jpg" );
+   skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_gray_matter+6.jpg" );
    //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_easter+6.jpg" );
    //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_hot_nebula+6.jpg" );
    //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_ice_field+6.jpg" );
@@ -317,6 +331,7 @@ void Aftr::GLViewSpeedRacer::loadMap()
    //inherit from WOImGui and override WOImGui::drawImGui_for_this_frame(...) (among any others you need).
    WOImGui* gui = WOImGui::New( nullptr );
    gui->setLabel( "My Gui" );
+   /**
    gui->subscribe_drawImGuiWidget(
       [this, gui]() //this is a lambda, the capture clause is in [], the input argument list is in (), and the body is in {}
       {
@@ -325,8 +340,9 @@ void Aftr::GLViewSpeedRacer::loadMap()
          ImPlot::ShowDemoWindow(); //Displays the ImPlot demo using ImGui from C:/repos/aburn/engine/src/imgui_implot/implot_demo.cpp
       } );
    this->worldLst->push_back( gui );
+   **/
 
-   createSpeedRacerWayPoints();
+   //createSpeedRacerWayPoints();
 }
 
 
@@ -340,4 +356,11 @@ void GLViewSpeedRacer::createSpeedRacerWayPoints()
    WOWayPointSpherical* wayPt = WOWayPointSpherical::New( params, 3 );
    wayPt->setPosition( Vector( 50, 0, 3 ) );
    worldLst->push_back( wayPt );
+}
+
+void GLViewSpeedRacer::carSelection() {
+    WO* porsche = WO::New(ManagerEnvironmentConfiguration::getSMM() + "/car_models/model.dae");
+    porsche->setPosition(Vector(50, 0, 3));
+    porsche->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+    worldLst->push_back(porsche);
 }

@@ -32,6 +32,7 @@ public:
    virtual void onMouseMove( const SDL_MouseMotionEvent& e );
    virtual void onKeyDown( const SDL_KeyboardEvent& key );
    virtual void onKeyUp( const SDL_KeyboardEvent& key );
+   void carSelection();
 
 protected:
    GLViewSpeedRacer( const std::vector< std::string >& args );
