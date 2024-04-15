@@ -344,6 +344,22 @@ void Aftr::GLViewSpeedRacer::loadMap()
    porsche->setLabel("Porsche 911");
    carModels.push_back(porsche);
    delete porsche;
+ 
+   WO* wo = WO::New(wheeledCar, Vector(1, 1, 1));
+   wo->setPosition(Vector(0, 0, 0));
+   wo->isVisible = true;
+   wo->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+   wo->setLabel("Spider2");
+   worldLst->push_back(wo);
+   actorLst->push_back(wo);
+
+
+   WO* cube = WO::New(shinyRedPlasticCube, Vector(1, 1, 1), MESH_SHADING_TYPE::mstFLAT);
+   cube->setPosition(Vector(15, 0, 2));
+   cube->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+   cube->setLabel("CUBE");
+   worldLst->push_back(cube);
+
 
    //worldLst->push_back(carModels[0]);
    
