@@ -218,7 +218,7 @@ void Aftr::GLViewSpeedRacer::loadMap()
    }
    // Inside GLViewSpeedRacer::loadMap()
    // Path to the terrain image
-   std::string terrainImagePath = ManagerEnvironmentConfiguration::getSMM() + "/images/Woodland.bmp";
+   std::string terrainImagePath = ManagerEnvironmentConfiguration::getSMM() + "/images/woodland.bmp";
 
    // Load the terrain image file
    FILE* file = std::fopen(terrainImagePath.c_str(), "rb");
@@ -260,8 +260,6 @@ void Aftr::GLViewSpeedRacer::loadMap()
    // Free the image data
    stbi_image_free(imgData);
 
-   // Close the file
-   std::fclose(file);
 
 
 
@@ -282,14 +280,6 @@ void Aftr::GLViewSpeedRacer::loadMap()
    car1->setLabel("Car1");
    worldLst->push_back(car1);
    actorLst->push_back(car1);
-
-
-   // import porsche
-   WO* porsche = WO::New("../../../modules/SpeedRacer/mm/models/porsche/Porsche_935_2019.obj");
-   porsche->setPosition(Vector(10, 10, 3)); // start position will depend on terrain
-   porsche->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-   porsche->setLabel("Porsche 911");
-   carModels.push_back(porsche);
    
 
    std::string cars2(ManagerEnvironmentConfiguration::getSMM() + "/models/Ferrari.dae");
