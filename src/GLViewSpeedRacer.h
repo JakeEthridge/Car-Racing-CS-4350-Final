@@ -36,6 +36,7 @@ public:
    WO* car3;
    WO* car2;
    WO* car1;
+   GLuint textureName; // Member variable to store OpenGL texture ID
 
 protected:
    GLViewSpeedRacer( const std::vector< std::string >& args );
