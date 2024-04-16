@@ -33,6 +33,7 @@
 #include "WOImGui.h" //GUI Demos also need to #include "AftrImGuiIncludes.h"
 #include "AftrImGuiIncludes.h"
 #include "AftrGLRendererBase.h"
+#include "stb/stb_image.h"
 
 using namespace Aftr;
 
@@ -172,31 +173,8 @@ void Aftr::GLViewSpeedRacer::loadMap()
    
    //SkyBox Textures readily available
    std::vector< std::string > skyBoxImageNames; //vector to store texture paths
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_water+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_dust+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_mountains+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_winter+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/early_morning+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_afternoon+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_cloudy+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_cloudy3+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_day+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_day2+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_deepsun+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_evening+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_morning+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_morning2+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_noon+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_warp+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_Hubble_Nebula+6.jpg" );
    skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_gray_matter+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_easter+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_hot_nebula+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_ice_field+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_lemon_lime+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_milk_chocolate+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_solar_bloom+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_thick_rb+6.jpg" );
+ 
 
    {
       //Create a light
@@ -238,104 +216,66 @@ void Aftr::GLViewSpeedRacer::loadMap()
       wo->setLabel( "Grass" );
       worldLst->push_back( wo );
    }
+   // Inside GLViewSpeedRacer::loadMap()
+   // Path to the terrain image
+   std::string terrainImagePath = ManagerEnvironmentConfiguration::getSMM() + "/images/Woodland.bmp";
 
-   //{
-   //   //Create the infinite grass plane that uses the Open Dynamics Engine (ODE)
-   //   WO* wo = WOStatic::New( grass, Vector(1,1,1), MESH_SHADING_TYPE::mstFLAT );
-   //   ((WOStatic*)wo)->setODEPrimType( ODE_PRIM_TYPE::PLANE );
-   //   wo->setPosition( Vector(0,0,0) );
-   //   wo->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-   //   wo->getModel()->getModelDataShared()->getModelMeshes().at(0)->getSkins().at(0).getMultiTextureSet().at(0)->setTextureRepeats( 5.0f );
-   //   wo->setLabel( "Grass" );
-   //   worldLst->push_back( wo );
-   //}
+   // Load the terrain image file
+   FILE* file = std::fopen(terrainImagePath.c_str(), "rb");
+   if (!file) {
+       std::fprintf(stderr, "Failed to open terrain image file: %s\n", terrainImagePath.c_str());
+       return;
+   }
 
-   //{
-   //   //Create the infinite grass plane that uses NVIDIAPhysX(the floor)
-   //   WO* wo = WONVStaticPlane::New( grass, Vector( 1, 1, 1 ), MESH_SHADING_TYPE::mstFLAT );
-   //   wo->setPosition( Vector( 0, 0, 0 ) );
-   //   wo->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-   //   wo->getModel()->getModelDataShared()->getModelMeshes().at( 0 )->getSkins().at( 0 ).getMultiTextureSet().at( 0 )->setTextureRepeats( 5.0f );
-   //   wo->setLabel( "Grass" );
-   //   worldLst->push_back( wo );
-   //}
+   // Load image data from the file
+   int width, height, channels;
+   unsigned char* imgData = stbi_load_from_file(file, &width, &height, &channels, 0);
+   if (imgData == nullptr) {
+       std::fprintf(stderr, "Failed to load terrain image\n");
+       std::fclose(file);
+       return;
+   }
 
-   //{
-   //   //Create the infinite grass plane (the floor)
-   //   WO* wo = WONVPhysX::New( shinyRedPlasticCube, Vector( 1, 1, 1 ), MESH_SHADING_TYPE::mstFLAT );
-   //   wo->setPosition( Vector( 0, 0, 50.0f ) );
-   //   wo->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-   //   wo->setLabel( "Grass" );
-   //   worldLst->push_back( wo );
-   //}
+   // Create an OpenGL texture for the terrain
+   GLuint terrainTextureID;
+   glGenTextures(1, &terrainTextureID);
+   glBindTexture(GL_TEXTURE_2D, terrainTextureID);
 
-   //{
-   //   WO* wo = WONVPhysX::New( shinyRedPlasticCube, Vector( 1, 1, 1 ), MESH_SHADING_TYPE::mstFLAT );
-   //   wo->setPosition( Vector( 0, 0.5f, 75.0f ) );
-   //   wo->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-   //   wo->setLabel( "Grass" );
-   //   worldLst->push_back( wo );
-   //}
+   // Set texture parameters
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-   //{
-   //   WO* wo = WONVDynSphere::New( ManagerEnvironmentConfiguration::getVariableValue( "sharedmultimediapath" ) + "/models/sphereRp5.wrl", Vector( 1.0f, 1.0f, 1.0f ), mstSMOOTH );
-   //   wo->setPosition( 0, 0, 100.0f );
-   //   wo->setLabel( "Sphere" );
-   //   this->worldLst->push_back( wo );
-   //}
+   // Upload the texture data from the image
+   GLenum format = (channels == 4) ? GL_RGBA : GL_RGB;
+   glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, imgData);
 
-   //{
-   //   WO* wo = WOHumanCal3DPaladin::New( Vector( .5, 1, 1 ), 100 );
-   //   ((WOHumanCal3DPaladin*)wo)->rayIsDrawn = false; //hide the "leg ray"
-   //   ((WOHumanCal3DPaladin*)wo)->isVisible = false; //hide the Bounding Shell
-   //   wo->setPosition( Vector( 20, 20, 20 ) );
-   //   wo->setLabel( "Paladin" );
-   //   worldLst->push_back( wo );
-   //   actorLst->push_back( wo );
-   //   netLst->push_back( wo );
-   //   this->setActor( wo );
-   //}
-   //
-   //{
-   //   WO* wo = WOHumanCyborg::New( Vector( .5, 1.25, 1 ), 100 );
-   //   wo->setPosition( Vector( 20, 10, 20 ) );
-   //   wo->isVisible = false; //hide the WOHuman's bounding box
-   //   ((WOHuman*)wo)->rayIsDrawn = false; //show the 'leg' ray
-   //   wo->setLabel( "Human Cyborg" );
-   //   worldLst->push_back( wo );
-   //   actorLst->push_back( wo ); //Push the WOHuman as an actor
-   //   netLst->push_back( wo );
-   //   this->setActor( wo ); //Start module where human is the actor
-   //}
+   // Generate mipmaps
+   glGenerateMipmap(GL_TEXTURE_2D);
 
-   //{
-   //   //Create and insert the WOWheeledVehicle
-   //   std::vector< std::string > wheels;
-   //   std::string wheelStr( "../../../shared/mm/models/WOCar1970sBeaterTire.wrl" );
-   //   wheels.push_back( wheelStr );
-   //   wheels.push_back( wheelStr );
-   //   wheels.push_back( wheelStr );
-   //   wheels.push_back( wheelStr );
-   //   WO* wo = WOCar1970sBeater::New( "../../../shared/mm/models/WOCar1970sBeater.wrl", wheels );
-   //   wo->setPosition( Vector( 5, -15, 20 ) );
-   //   wo->setLabel( "Car 1970s Beater" );
-   //   ((WOODE*)wo)->mass = 200;
-   //   worldLst->push_back( wo );
-   //   actorLst->push_back( wo );
-   //   this->setActor( wo );
-   //   netLst->push_back( wo );
-   //}
-   std::string cars("../../../modules/SpeedRacer/mm/models/porsche/Porsche_935_2019.obj");
-   WO* car3 = WO::New(cars, Vector(0.01, 0.01, 0.01));
-   car3->setPosition(Vector(0, 0, 1));
-   car3->isVisible = true;
-   car3->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-   car3->setLabel("Car2");
-   worldLst->push_back(car3);
-   actorLst->push_back(car3);
+   // Unbind the texture
+   glBindTexture(GL_TEXTURE_2D, 0);
+
+   // Free the image data
+   stbi_image_free(imgData);
+
+   // Close the file
+   std::fclose(file);
+
+
+
+   //std::string cars("../../../modules/SpeedRacer/mm/models/porsche/Porsche_935_2019.obj");
+   //car3 = WO::New(cars, Vector(0.01, 0.01, 0.01));
+   //car3->setPosition(Vector(0, 0, 1));
+   //car3->isVisible = true;
+   //car3->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+   //car3->setLabel("Car2");
+   //worldLst->push_back(car3);
+   //actorLst->push_back(car3);
 
    std::string car(ManagerEnvironmentConfiguration::getSMM() + "/models/model.dae");
-   WO* car1 = WO::New(car, Vector(1, 1, 1));
+   car1 = WO::New(car, Vector(1, 1, 1));
    car1->setPosition(Vector(0, 0, 1));
    car1->isVisible = true;
    car1->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
@@ -346,7 +286,7 @@ void Aftr::GLViewSpeedRacer::loadMap()
 
 
    std::string cars2(ManagerEnvironmentConfiguration::getSMM() + "/models/Ferrari.dae");
-   WO* car2 = WO::New(cars2, Vector(1, 1, 1));
+   car2 = WO::New(cars2, Vector(1, 1, 1));
    car2->setPosition(Vector(0, 0, 1));
    car2->isVisible = true;
    car2->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
@@ -363,7 +303,7 @@ void Aftr::GLViewSpeedRacer::loadMap()
    WOImGui* gui = WOImGui::New( nullptr );
    gui->setLabel( "My Gui" );
    gui->subscribe_drawImGuiWidget(
-       [this, gui, car1, car2, car3]() {
+       [this, gui]() {
            static WO* focus = car1; // Set the initial focus to car1
            ImVec4 bgColor = ImVec4(0.2f, 0.2f, 0.2f, 1.0f); // Background color for the GUI
            if (ImGui::Begin("Car Switch")) {
