@@ -284,6 +284,13 @@ void Aftr::GLViewSpeedRacer::loadMap()
    actorLst->push_back(car1);
 
 
+   // import porsche
+   WO* porsche = WO::New("../../../modules/SpeedRacer/mm/models/porsche/Porsche_935_2019.obj");
+   porsche->setPosition(Vector(10, 10, 3)); // start position will depend on terrain
+   porsche->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+   porsche->setLabel("Porsche 911");
+   carModels.push_back(porsche);
+   
 
    std::string cars2(ManagerEnvironmentConfiguration::getSMM() + "/models/Ferrari.dae");
    car2 = WO::New(cars2, Vector(1, 1, 1));
