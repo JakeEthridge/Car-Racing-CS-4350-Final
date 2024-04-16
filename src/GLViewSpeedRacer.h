@@ -33,6 +33,9 @@ public:
    virtual void onKeyDown( const SDL_KeyboardEvent& key );
    virtual void onKeyUp( const SDL_KeyboardEvent& key );
    void carSelection();
+   WO* car3;
+   WO* car2;
+   WO* car1;
 
 protected:
    GLViewSpeedRacer( const std::vector< std::string >& args );
