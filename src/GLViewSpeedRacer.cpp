@@ -328,14 +328,21 @@ void Aftr::GLViewSpeedRacer::loadMap()
 
    // Car Creation list
    std::vector<WO*> carModels;
+
+   // import nissan
+   WO* nissan = WO::New("../../../modules/SpeedRacer/mm/models/nissan/NISSAN-GTR.mtl");
+   nissan->setPosition(Vector(10, 10, 3)); // start position will depend on terrain
+   nissan->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+   nissan->setLabel("Nissan GTR");
+   carModels.push_back(nissan);
    
    // import ferrari
-   WO* ferrari = WO::New("../../../modules/SpeedRacer/mm/models/ferrari/model.dae");
-   ferrari->setPosition(Vector(10, 10, 3)); // start position will depend on terrain
-   ferrari->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-   ferrari->setLabel("Ferrari F8 Tributo");
-   carModels.push_back(ferrari);
-   delete ferrari;
+   //WO* ferrari = WO::New("../../../modules/SpeedRacer/mm/models/ferrari/model.dae");
+   //ferrari->setPosition(Vector(10, 10, 3)); // start position will depend on terrain
+   //ferrari->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+   //ferrari->setLabel("Ferrari F8 Tributo");
+   //carModels.push_back(ferrari);
+   
 
    // import porsche
    WO* porsche = WO::New("../../../modules/SpeedRacer/mm/models/porsche/Porsche_935_2019.obj");
@@ -343,9 +350,9 @@ void Aftr::GLViewSpeedRacer::loadMap()
    porsche->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
    porsche->setLabel("Porsche 911");
    carModels.push_back(porsche);
-   delete porsche;
+   
 
-   //worldLst->push_back(carModels[0]);
+   worldLst->push_back(carModels[0]);
    
    //Make a Dear Im Gui instance via the WOImGui in the engine... This calls
    //the default Dear ImGui demo that shows all the features... To create your own,
