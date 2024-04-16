@@ -325,24 +325,24 @@ void Aftr::GLViewSpeedRacer::loadMap()
    //   this->setActor( wo );
    //   netLst->push_back( wo );
    //}
+   std::string cars("../../../modules/SpeedRacer/mm/models/porsche/Porsche_935_2019.obj");
+   WO* car3 = WO::New(cars, Vector(0.01, 0.01, 0.01));
+   car3->setPosition(Vector(0, 0, 1));
+   car3->isVisible = true;
+   car3->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+   car3->setLabel("Car2");
+   worldLst->push_back(car3);
+   actorLst->push_back(car3);
 
-   // Car Creation list
-   std::vector<WO*> carModels;
+   std::string car(ManagerEnvironmentConfiguration::getSMM() + "/models/model.dae");
+   WO* car1 = WO::New(car, Vector(1, 1, 1));
+   car1->setPosition(Vector(0, 0, 1));
+   car1->isVisible = true;
+   car1->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+   car1->setLabel("Car1");
+   worldLst->push_back(car1);
+   actorLst->push_back(car1);
 
-   // import nissan
-   WO* nissan = WO::New("../../../modules/SpeedRacer/mm/models/nissan/NISSAN-GTR.mtl");
-   nissan->setPosition(Vector(10, 10, 3)); // start position will depend on terrain
-   nissan->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-   nissan->setLabel("Nissan GTR");
-   carModels.push_back(nissan);
-   
-   // import ferrari
-   //WO* ferrari = WO::New("../../../modules/SpeedRacer/mm/models/ferrari/model.dae");
-   //ferrari->setPosition(Vector(10, 10, 3)); // start position will depend on terrain
-   //ferrari->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-   //ferrari->setLabel("Ferrari F8 Tributo");
-   //carModels.push_back(ferrari);
-   
 
    // import porsche
    WO* porsche = WO::New("../../../modules/SpeedRacer/mm/models/porsche/Porsche_935_2019.obj");
@@ -352,25 +352,69 @@ void Aftr::GLViewSpeedRacer::loadMap()
    carModels.push_back(porsche);
    
 
-   worldLst->push_back(carModels[0]);
+   std::string cars2(ManagerEnvironmentConfiguration::getSMM() + "/models/Ferrari.dae");
+   WO* car2 = WO::New(cars2, Vector(1, 1, 1));
+   car2->setPosition(Vector(0, 0, 1));
+   car2->isVisible = true;
+   car2->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+   car2->setLabel("Car3");
+   worldLst->push_back(car2);
+   actorLst->push_back(car2);
+
+   
+   //worldLst->push_back(carModels[0]);
    
    //Make a Dear Im Gui instance via the WOImGui in the engine... This calls
    //the default Dear ImGui demo that shows all the features... To create your own,
    //inherit from WOImGui and override WOImGui::drawImGui_for_this_frame(...) (among any others you need).
    WOImGui* gui = WOImGui::New( nullptr );
    gui->setLabel( "My Gui" );
-   /**
    gui->subscribe_drawImGuiWidget(
-      [this, gui]() //this is a lambda, the capture clause is in [], the input argument list is in (), and the body is in {}
-      {
-         ImGui::ShowDemoWindow(); //Displays the default ImGui demo from C:/repos/aburn/engine/src/imgui_implot/implot_demo.cpp
-         WOImGui::draw_AftrImGui_Demo( gui ); //Displays a small Aftr Demo from C:/repos/aburn/engine/src/aftr/WOImGui.cpp
-         ImPlot::ShowDemoWindow(); //Displays the ImPlot demo using ImGui from C:/repos/aburn/engine/src/imgui_implot/implot_demo.cpp
-      } );
-   this->worldLst->push_back( gui );
-   **/
+       [this, gui, car1, car2, car3]() {
+           static WO* focus = car1; // Set the initial focus to car1
+           ImVec4 bgColor = ImVec4(0.2f, 0.2f, 0.2f, 1.0f); // Background color for the GUI
+           if (ImGui::Begin("Car Switch")) {
+               const char* items[] = { "Car1", "Car2", "Car3" }; // List of items including Car3
+               static int item_current_idx = 0; // Index of selected item
 
-   //createSpeedRacerWayPoints();
+               if (ImGui::BeginCombo("Select Car", items[item_current_idx])) {
+                   for (int i = 0; i < IM_ARRAYSIZE(items); i++) {
+                       bool is_selected = (item_current_idx == i);
+                       if (ImGui::Selectable(items[i], is_selected)) {
+                           item_current_idx = i;
+                           // Toggle visibility based on selection
+                           if (i == 0) {
+                               focus = car1;
+                               car1->isVisible = true;
+                               car2->isVisible = false;
+                               car3->isVisible = false;
+                           }
+                           else if (i == 1) {
+                               focus = car2;
+                               car1->isVisible = false;
+                               car2->isVisible = true;
+                               car3->isVisible = false;
+                           }
+                           else if (i == 2) {
+                               focus = car3;
+                               car1->isVisible = false;
+                               car2->isVisible = false;
+                               car3->isVisible = true;
+                           }
+                       }
+                       if (is_selected) {
+                           ImGui::SetItemDefaultFocus();
+                       }
+                   }
+                   ImGui::EndCombo();
+               }
+               ImGui::End();
+           }
+       });
+   this->worldLst->push_back( gui );
+ 
+
+   createSpeedRacerWayPoints();
 }
 
 
