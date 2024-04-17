@@ -216,61 +216,18 @@ void Aftr::GLViewSpeedRacer::loadMap()
       wo->setLabel( "Grass" );
       worldLst->push_back( wo );
    }
-   // Inside GLViewSpeedRacer::loadMap()
-   // Path to the terrain image
-   std::string terrainImagePath = ManagerEnvironmentConfiguration::getSMM() + "/images/woodland.bmp";
-
-   // Load the terrain image file
-   FILE* file = std::fopen(terrainImagePath.c_str(), "rb");
-   if (!file) {
-       std::fprintf(stderr, "Failed to open terrain image file: %s\n", terrainImagePath.c_str());
-       return;
-   }
-
-   // Load image data from the file
-   int width, height, channels;
-   unsigned char* imgData = stbi_load_from_file(file, &width, &height, &channels, 0);
-   if (imgData == nullptr) {
-       std::fprintf(stderr, "Failed to load terrain image\n");
-       std::fclose(file);
-       return;
-   }
-
-   // Create an OpenGL texture for the terrain
-   GLuint terrainTextureID;
-   glGenTextures(1, &terrainTextureID);
-   glBindTexture(GL_TEXTURE_2D, terrainTextureID);
-
-   // Set texture parameters
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-   // Upload the texture data from the image
-   GLenum format = (channels == 4) ? GL_RGBA : GL_RGB;
-   glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, imgData);
-
-   // Generate mipmaps
-   glGenerateMipmap(GL_TEXTURE_2D);
-
-   // Unbind the texture
-   glBindTexture(GL_TEXTURE_2D, 0);
-
-   // Free the image data
-   stbi_image_free(imgData);
+   
 
 
 
-
-   //std::string cars("../../../modules/SpeedRacer/mm/models/porsche/Porsche_935_2019.obj");
-   //car3 = WO::New(cars, Vector(0.01, 0.01, 0.01));
-   //car3->setPosition(Vector(0, 0, 1));
-   //car3->isVisible = true;
-   //car3->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-   //car3->setLabel("Car2");
-   //worldLst->push_back(car3);
-   //actorLst->push_back(car3);
+   std::string cars("../../../modules/SpeedRacer/mm/models/porsche/Porsche_935_2019.obj");
+   car3 = WO::New(cars, Vector(0.01, 0.01, 0.01));
+   car3->setPosition(Vector(0, 0, 1));
+   car3->isVisible = true;
+   car3->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+   car3->setLabel("Car2");
+   worldLst->push_back(car3);
+   actorLst->push_back(car3);
 
    std::string car(ManagerEnvironmentConfiguration::getSMM() + "/models/model.dae");
    car1 = WO::New(car, Vector(1, 1, 1));
