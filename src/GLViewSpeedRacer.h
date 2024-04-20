@@ -33,10 +33,7 @@ public:
    virtual void onKeyDown( const SDL_KeyboardEvent& key );
    virtual void onKeyUp( const SDL_KeyboardEvent& key );
    void carSelection();
-<<<<<<< HEAD
    WO* car4;
-=======
->>>>>>> 5b32f8e8b156624fc4f4a2236c343c799878b56e
    WO* car3;
    WO* car2;
    WO* car1;
