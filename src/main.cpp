@@ -8,6 +8,7 @@
 #include <memory>
 #include "GLViewSpeedRacer.h" //GLView subclass instantiated to drive this simulation
 
+
 /**
    This creates a GLView subclass instance and begins the GLView's main loop.
    Each iteration of this loop occurs when a reset request is received. A reset
