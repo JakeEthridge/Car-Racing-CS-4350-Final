@@ -200,13 +200,6 @@ void Aftr::GLViewSpeedRacer::loadMap()
    //SkyBox Textures readily available
    std::vector< std::string > skyBoxImageNames; //vector to store texture paths
    skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_gray_matter+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_easter+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_hot_nebula+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_ice_field+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_lemon_lime+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_milk_chocolate+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_solar_bloom+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_thick_rb+6.jpg" );
 
    {
       //Create a light
@@ -249,38 +242,46 @@ void Aftr::GLViewSpeedRacer::loadMap()
       worldLst->push_back( wo );
    }
    
-
-
-
-   std::string cars("../../../modules/SpeedRacer/mm/models/porsche/Porsche_935_2019.obj");
-   car3 = WO::New(cars, Vector(0.01, 0.01, 0.01));
-   car3->setPosition(Vector(0, 0, 1));
-   car3->isVisible = true;
-   car3->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-   car3->setLabel("Car2");
-   worldLst->push_back(car3);
-   actorLst->push_back(car3);
    
+   // Car Models loaded in
 
-  std::string cars2(ManagerEnvironmentConfiguration::getSMM() + "/models/Ferrari.dae");
-   car2 = WO::New(cars2, Vector(1, 1, 1));
-   car2->setPosition(Vector(0, 0, 1));
-   car2->isVisible = true;
-   car2->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-   car2->setLabel("Car3");
-   worldLst->push_back(car2);
-   actorLst->push_back(car2);
+   //std::string cars("../../../modules/SpeedRacer/mm/models/porsche/Porsche_935_2019.obj");
+   //std::string car(ManagerEnvironmentConfiguration::getSMM() + "/models/rcx_treads.wrl");
+   std::string cars2("../../../modules/SpeedRacer/mm/models/porsche/low_poly_911.dae");
 
-   std::string car(ManagerEnvironmentConfiguration::getSMM() + "/models/rcx_treads.wrl");
-   car1 = WO::New(car, Vector(1, 1, 1));
-   car1->setPosition(Vector(0, 0, 2));
+   // Car Objects 1 - 4
+
+   car1 = WO::New(cars2, Vector(1, 1, 1));
+   car1->setPosition(Vector(10, 0, 2));
    car1->isVisible = true;
    car1->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
    car1->setLabel("Car1");
    worldLst->push_back(car1);
    actorLst->push_back(car1);
 
+   car2 = WO::New(cars2, Vector(1, 1, 1));
+   car2->setPosition(Vector(8, 0, 1));
+   car2->isVisible = false;
+   car2->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+   car2->setLabel("Car3");
+   worldLst->push_back(car2);
+   actorLst->push_back(car2);
 
+   car3 = WO::New(cars2, Vector(1, 1, 1));
+   car3->setPosition(Vector(6, 0, 1));
+   car3->isVisible = false;
+   car3->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+   car3->setLabel("Car3");
+   worldLst->push_back(car3);
+   actorLst->push_back(car3);
+
+   car4 = WO::New(cars2, Vector(1, 1, 1));
+   car4->setPosition(Vector(4, 0, 1));
+   car4->isVisible = false;
+   car4->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+   car4->setLabel("Car4");
+   worldLst->push_back(car4);
+   actorLst->push_back(car4);
 
    std::string RaceTrack(ManagerEnvironmentConfiguration::getSMM() + "/models/roadcenterlane26x10.wrl");
    race1 = WO::New(RaceTrack, Vector(2, 2, 2));
@@ -559,45 +560,11 @@ void Aftr::GLViewSpeedRacer::loadMap()
 
    worldLst->push_back(prop5);
    actorLst->push_back(prop5);
-
-
-   car1 = WO::New(porsche, Vector(1, 1, 1));
-   car1->setPosition(Vector(5, 0, 1));
-   car1->isVisible = true;
-   car1->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-   car1->setLabel("Nissan");
-   worldLst->push_back(car1);
-   actorLst->push_back(car1);
    
-   car2 = WO::New(porsche, Vector(1, 1, 1));
-   car2->setPosition(Vector(0, 0, 1));
-   car2->isVisible = false;
-   car2->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-   car2->setLabel("Porsche 911");
-   worldLst->push_back(car2);
-   actorLst->push_back(car2);
    prop5->rotateAboutGlobalZ(2.1f); // Adjust the angle as needed
 
    worldLst->push_back(prop5);
    actorLst->push_back(prop5);
-
-
-
-   car3 = WO::New(porsche, Vector(1, 1, 1));
-   car3->setPosition(Vector(8, 0, 1));
-   car3->isVisible = false;
-   car3->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-   car3->setLabel("Car3");
-   worldLst->push_back(car3);
-   actorLst->push_back(car3);
-
-   car4 = WO::New(porsche, Vector(1, 1, 1));
-   car4->setPosition(Vector(10, 0, 1));
-   car4->isVisible = false;
-   car4->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-   car4->setLabel("Car4");
-   worldLst->push_back(car4);
-   actorLst->push_back(car4);
 
 
    //Make a Dear Im Gui instance via the WOImGui in the engine... This calls
@@ -660,7 +627,7 @@ void Aftr::GLViewSpeedRacer::loadMap()
    this->worldLst->push_back( gui );
  
 
-   createSpeedRacerWayPoints();
+   //createSpeedRacerWayPoints();
 }
 
 
