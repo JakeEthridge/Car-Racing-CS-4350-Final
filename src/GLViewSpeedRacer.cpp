@@ -250,7 +250,7 @@ void Aftr::GLViewSpeedRacer::loadMap()
    std::string cars2("../../../modules/SpeedRacer/mm/models/porsche/low_poly_911.dae");
 
    // Car Objects 1 - 4
-
+   
    car1 = WO::New(cars2, Vector(1, 1, 1));
    car1->setPosition(Vector(10, 0, 2));
    car1->isVisible = true;
@@ -263,7 +263,7 @@ void Aftr::GLViewSpeedRacer::loadMap()
    car2->setPosition(Vector(8, 0, 1));
    car2->isVisible = false;
    car2->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-   car2->setLabel("Car3");
+   car2->setLabel("Car2");
    worldLst->push_back(car2);
    actorLst->push_back(car2);
 
@@ -457,6 +457,7 @@ void Aftr::GLViewSpeedRacer::loadMap()
    }
 
    std::string props2(ManagerEnvironmentConfiguration::getSMM() + "/models/generic_medium.obj");
+   WO* prop2 = WO::New(props2, Vector(1, 1, 1));
    // Upon async model loaded, set the material properties to achieve a grey texture
    prop2->upon_async_model_loaded([prop2]() {
        auto& meshes = prop2->getModel()->getModelDataShared()->getModelMeshes();
