@@ -126,8 +126,7 @@ void GLViewSpeedRacer::onMouseMove( const SDL_MouseMotionEvent& e )
 }
 
 NetMessengerClient* client;
-void GLViewSpeedRacer::onKeyDown(const SDL_KeyboardEvent& key)
-{
+void GLViewSpeedRacer::onKeyDown(const SDL_KeyboardEvent& key) {
     GLView::onKeyDown(key);
 
     float moveSpeed = 1.0f; // Adjust as needed
@@ -136,32 +135,44 @@ void GLViewSpeedRacer::onKeyDown(const SDL_KeyboardEvent& key)
     // Set the movement direction based on the pressed keys
     Vector movement(0, 0, 0);
 
-    if (key.keysym.sym == SDLK_w) // Move forwards
-    {
+    if (key.keysym.sym == SDLK_w) { // Move forwards
         // Move the car in the direction it is facing (its look direction)
         movement += car1->getLookDirection() * moveSpeed;
         car1->moveRelative(movement);
-    }
-    if (key.keysym.sym == SDLK_s) // Move backwards
-    {
-        // Move the car backwards along its look direction
-        movement -= car1->getLookDirection() * moveSpeed;
-        car1->moveRelative(movement);
+
+        // Send a net message indicating the car's movement
+        NetMsgCreateRawWO* netMsg = new NetMsgCreateRawWO();
+        netMsg->xPos = car1->getPosition().x; // Set the x position in the message
+        netMsg->yPos = car1->getPosition().y; // Set the y position in the message
+        netMsg->zPos = car1->getPosition().z; // Set the z position in the message
+        client->sendNetMsgSynchronousTCP(*netMsg); // Use the instance to call the member function
+        delete netMsg;
     }
 
-    // Handle continuous turning
-    if (key.keysym.sym == SDLK_a) // Turn left
-    {
-        // Rotate the car counterclockwise (left turn) around its vertical axis (z-axis)
+    // Handle continuous turning and send net messages
+    if (key.keysym.sym == SDLK_a) { // Turn left
+        // Adjust the rotation of the car counterclockwise (left turn)
         car1->rotateAboutGlobalZ(turnAngle);
+
+        // Send a net message indicating the car's left turn and rotation
+        NetMsgCreateRawWO* netMsg = new NetMsgCreateRawWO();
+        netMsg->rotationZ = turnAngle; // Set the rotation data
+        // You can include other rotation data if needed
+        client->sendNetMsgSynchronousTCP(*netMsg);
+        delete netMsg;
     }
-    if (key.keysym.sym == SDLK_d) // Turn right
-    {
-        // Rotate the car clockwise (right turn) around its vertical axis (z-axis)
+    if (key.keysym.sym == SDLK_d) { // Turn right
+        // Adjust the rotation of the car clockwise (right turn)
         car1->rotateAboutGlobalZ(-turnAngle);
+
+        // Send a net message indicating the car's right turn and rotation
+        NetMsgCreateRawWO* netMsg = new NetMsgCreateRawWO();
+        netMsg->rotationZ = -turnAngle; // Set the rotation data
+        // You can include other rotation data if needed
+        client->sendNetMsgSynchronousTCP(*netMsg);
+        delete netMsg;
     }
 
-    // Optionally, you can perform additional actions based on key presses here
 }
 
 
@@ -187,6 +198,8 @@ void Aftr::GLViewSpeedRacer::loadMap()
    this->actorLst = new WorldList();
    this->netLst = new WorldList();
 
+   client = NetMessengerClient::New("127.0.0.1", ManagerEnvironmentConfiguration::getVariableValue("NetServerTransmitPort"));
+
    ManagerOpenGLState::GL_CLIPPING_PLANE = 1000.0;
    ManagerOpenGLState::GL_NEAR_PLANE = 0.1f;
    ManagerOpenGLState::enableFrustumCulling = false;
@@ -195,15 +208,11 @@ void Aftr::GLViewSpeedRacer::loadMap()
 
    this->cam->setPosition( 15,15,10 );
 
-   std::string shinyRedPlasticCube( ManagerEnvironmentConfiguration::getSMM() + "/models/cube4x4x4redShinyPlastic_pp.wrl" );
-   std::string wheeledCar( ManagerEnvironmentConfiguration::getSMM() + "/models/rcx_treads.wrl" );
    std::string grass( ManagerEnvironmentConfiguration::getSMM() + "/models/grassFloor400x400_pp.wrl" );
-   std::string human( ManagerEnvironmentConfiguration::getSMM() + "/models/human_chest.wrl" );
    
    //SkyBox Textures readily available
    std::vector< std::string > skyBoxImageNames; //vector to store texture paths
    skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_gray_matter+6.jpg" );
- 
 
    {
       //Create a light
@@ -246,38 +255,60 @@ void Aftr::GLViewSpeedRacer::loadMap()
       worldLst->push_back( wo );
    }
    
+<<<<<<< HEAD
 
 
 
-   std::string cars("../../../modules/SpeedRacer/mm/models/porsche/Porsche_935_2019.obj");
+  /* std::string cars("../../../modules/SpeedRacer/mm/models/porsche/Porsche_935_2019.obj");
    car3 = WO::New(cars, Vector(0.01, 0.01, 0.01));
    car3->setPosition(Vector(0, 0, 1));
    car3->isVisible = true;
    car3->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
    car3->setLabel("Car2");
    worldLst->push_back(car3);
-   actorLst->push_back(car3);
+   actorLst->push_back(car3);*/
+=======
+>>>>>>> ddb1887d90bf66967d4caaf7179630cbe69bd8ac
    
+   // Car Models loaded in
 
-  std::string cars2(ManagerEnvironmentConfiguration::getSMM() + "/models/Ferrari.dae");
-   car2 = WO::New(cars2, Vector(1, 1, 1));
-   car2->setPosition(Vector(0, 0, 1));
-   car2->isVisible = true;
-   car2->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-   car2->setLabel("Car3");
-   worldLst->push_back(car2);
-   actorLst->push_back(car2);
+   //std::string cars("../../../modules/SpeedRacer/mm/models/porsche/Porsche_935_2019.obj");
+   //std::string car(ManagerEnvironmentConfiguration::getSMM() + "/models/rcx_treads.wrl");
+   std::string cars2("../../../modules/SpeedRacer/mm/models/porsche/low_poly_911.dae");
 
-   std::string car(ManagerEnvironmentConfiguration::getSMM() + "/models/rcx_treads.wrl");
-   car1 = WO::New(car, Vector(1, 1, 1));
-   car1->setPosition(Vector(0, 0, 2));
+   // Car Objects 1 - 4
+   
+   car1 = WO::New(cars2, Vector(1, 1, 1));
+   car1->setPosition(Vector(10, 0, 2));
    car1->isVisible = true;
    car1->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
    car1->setLabel("Car1");
    worldLst->push_back(car1);
    actorLst->push_back(car1);
 
+   car2 = WO::New(cars2, Vector(1, 1, 1));
+   car2->setPosition(Vector(8, 0, 1));
+   car2->isVisible = false;
+   car2->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+   car2->setLabel("Car2");
+   worldLst->push_back(car2);
+   actorLst->push_back(car2);
 
+   car3 = WO::New(cars2, Vector(1, 1, 1));
+   car3->setPosition(Vector(6, 0, 1));
+   car3->isVisible = false;
+   car3->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+   car3->setLabel("Car3");
+   worldLst->push_back(car3);
+   actorLst->push_back(car3);
+
+   car4 = WO::New(cars2, Vector(1, 1, 1));
+   car4->setPosition(Vector(4, 0, 1));
+   car4->isVisible = false;
+   car4->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+   car4->setLabel("Car4");
+   worldLst->push_back(car4);
+   actorLst->push_back(car4);
 
    std::string RaceTrack(ManagerEnvironmentConfiguration::getSMM() + "/models/roadcenterlane26x10.wrl");
    race1 = WO::New(RaceTrack, Vector(2, 2, 2));
@@ -454,11 +485,6 @@ void Aftr::GLViewSpeedRacer::loadMap()
 
    std::string props2(ManagerEnvironmentConfiguration::getSMM() + "/models/generic_medium.obj");
    WO* prop2 = WO::New(props2, Vector(1, 1, 1));
-   prop2->setPosition(Vector(-21, 12.5, 1));
-   prop2->isVisible = true;
-   prop2->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-   prop2->setLabel("prop");
-
    // Upon async model loaded, set the material properties to achieve a grey texture
    prop2->upon_async_model_loaded([prop2]() {
        auto& meshes = prop2->getModel()->getModelDataShared()->getModelMeshes();
@@ -562,10 +588,11 @@ void Aftr::GLViewSpeedRacer::loadMap()
 
    worldLst->push_back(prop5);
    actorLst->push_back(prop5);
+   
+   prop5->rotateAboutGlobalZ(2.1f); // Adjust the angle as needed
 
-
-
-
+   worldLst->push_back(prop5);
+   actorLst->push_back(prop5);
 
 
    //Make a Dear Im Gui instance via the WOImGui in the engine... This calls
@@ -577,8 +604,8 @@ void Aftr::GLViewSpeedRacer::loadMap()
        [this, gui]() {
            static WO* focus = car1; // Set the initial focus to car1
            ImVec4 bgColor = ImVec4(0.2f, 0.2f, 0.2f, 1.0f); // Background color for the GUI
-           if (ImGui::Begin("Car Switch")) {
-               const char* items[] = { "Car1", "Car2", "Car3" }; // List of items including Car3
+           if (ImGui::Begin("Main Menu")) {
+               const char* items[] = { car1->getLabel().c_str(), car2->getLabel().c_str(), car3->getLabel().c_str(), car4->getLabel().c_str() }; // List of items including Car4
                static int item_current_idx = 0; // Index of selected item
 
                if (ImGui::BeginCombo("Select Car", items[item_current_idx])) {
@@ -592,18 +619,28 @@ void Aftr::GLViewSpeedRacer::loadMap()
                                car1->isVisible = true;
                                car2->isVisible = false;
                                car3->isVisible = false;
+                               car4->isVisible = false;
                            }
                            else if (i == 1) {
                                focus = car2;
                                car1->isVisible = false;
                                car2->isVisible = true;
                                car3->isVisible = false;
+                               car4->isVisible = false;
                            }
                            else if (i == 2) {
                                focus = car3;
                                car1->isVisible = false;
                                car2->isVisible = false;
                                car3->isVisible = true;
+                               car4->isVisible = false;
+                           }
+                           else if (i == 3) {
+                               focus = car4;
+                               car1->isVisible = false;
+                               car2->isVisible = false;
+                               car3->isVisible = false;
+                               car4->isVisible = true;
                            }
                        }
                        if (is_selected) {
@@ -618,7 +655,7 @@ void Aftr::GLViewSpeedRacer::loadMap()
    this->worldLst->push_back( gui );
  
 
-   createSpeedRacerWayPoints();
+   //createSpeedRacerWayPoints();
 }
 
 
