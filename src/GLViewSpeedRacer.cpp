@@ -33,6 +33,14 @@
 #include "WOImGui.h" //GUI Demos also need to #include "AftrImGuiIncludes.h"
 #include "AftrImGuiIncludes.h"
 #include "AftrGLRendererBase.h"
+#include "stb/stb_image.h"
+#include "NetMsgCreateWO.h"
+#include <NetMsg.h>
+#include <new.h>
+#include "NetMessengerStreamBuffer.h"
+#include <NetMessengerClient.h>
+#include "NetMsgCreateRawWO.h"
+#include "GLView.h"
 
 using namespace Aftr;
 
@@ -117,38 +125,60 @@ void GLViewSpeedRacer::onMouseMove( const SDL_MouseMotionEvent& e )
    GLView::onMouseMove( e );
 }
 
-
-void GLViewSpeedRacer::onKeyDown( const SDL_KeyboardEvent& key )
+NetMessengerClient* client;
+void GLViewSpeedRacer::onKeyDown(const SDL_KeyboardEvent& key)
 {
-   GLView::onKeyDown( key );
-   if( key.keysym.sym == SDLK_0 )
-      this->setNumPhysicsStepsPerRender( 1 );
+    GLView::onKeyDown(key);
 
-   // car accelerator
-   if( key.keysym.sym == SDLK_w )
-   {
-       carSelection();
-   }
-   // move car left
-   if (key.keysym.sym == SDLK_a) {
+    float moveSpeed = 1.0f; // Adjust as needed
+    float turnAngle = 0.1f; // Adjust as needed
 
-   }
-   //move car right
-   if (key.keysym.sym == SDLK_d) {
+    // Set the movement direction based on the pressed keys
+    Vector movement(0, 0, 0);
 
-   }
-   // car reverses
-   if (key.keysym.sym == SDLK_s) {
+    if (key.keysym.sym == SDLK_w) // Move forwards
+    {
+        // Move the car in the direction it is facing (its look direction)
+        movement += car1->getLookDirection() * moveSpeed;
+        car1->moveRelative(movement);
+    }
+    if (key.keysym.sym == SDLK_s) // Move backwards
+    {
+        // Move the car backwards along its look direction
+        movement -= car1->getLookDirection() * moveSpeed;
+        car1->moveRelative(movement);
+    }
 
-   }
+    // Handle continuous turning
+    if (key.keysym.sym == SDLK_a) // Turn left
+    {
+        // Rotate the car counterclockwise (left turn) around its vertical axis (z-axis)
+        car1->rotateAboutGlobalZ(turnAngle);
+    }
+    if (key.keysym.sym == SDLK_d) // Turn right
+    {
+        // Rotate the car clockwise (right turn) around its vertical axis (z-axis)
+        car1->rotateAboutGlobalZ(-turnAngle);
+    }
 
+    // Optionally, you can perform additional actions based on key presses here
 }
 
 
-void GLViewSpeedRacer::onKeyUp( const SDL_KeyboardEvent& key )
+void GLViewSpeedRacer::onKeyUp(const SDL_KeyboardEvent& key)
 {
-   GLView::onKeyUp( key );
+    GLView::onKeyUp(key);
+
+    // Stop the continuous turning when 'A' or 'D' keys are released
+    if (key.keysym.sym == SDLK_a || key.keysym.sym == SDLK_d)
+    {
+        // Reset the rotation to stop turning
+        car1->rotateAboutGlobalZ(0.0f);
+    }
+
+    // Optionally, you can perform additional actions based on key releases here
 }
+
 
 
 void Aftr::GLViewSpeedRacer::loadMap()
@@ -165,38 +195,12 @@ void Aftr::GLViewSpeedRacer::loadMap()
 
    this->cam->setPosition( 15,15,10 );
 
-   std::string shinyRedPlasticCube( ManagerEnvironmentConfiguration::getSMM() + "/models/cube4x4x4redShinyPlastic_pp.wrl" );
-   std::string wheeledCar( ManagerEnvironmentConfiguration::getSMM() + "/models/rcx_treads.wrl" );
    std::string grass( ManagerEnvironmentConfiguration::getSMM() + "/models/grassFloor400x400_pp.wrl" );
-   std::string human( ManagerEnvironmentConfiguration::getSMM() + "/models/human_chest.wrl" );
    
    //SkyBox Textures readily available
    std::vector< std::string > skyBoxImageNames; //vector to store texture paths
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_water+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_dust+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_mountains+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_winter+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/early_morning+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_afternoon+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_cloudy+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_cloudy3+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_day+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_day2+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_deepsun+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_evening+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_morning+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_morning2+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_noon+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_warp+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_Hubble_Nebula+6.jpg" );
    skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_gray_matter+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_easter+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_hot_nebula+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_ice_field+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_lemon_lime+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_milk_chocolate+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_solar_bloom+6.jpg" );
-   //skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_thick_rb+6.jpg" );
+ 
 
    {
       //Create a light
@@ -239,145 +243,108 @@ void Aftr::GLViewSpeedRacer::loadMap()
       worldLst->push_back( wo );
    }
 
-   //{
-   //   //Create the infinite grass plane that uses the Open Dynamics Engine (ODE)
-   //   WO* wo = WOStatic::New( grass, Vector(1,1,1), MESH_SHADING_TYPE::mstFLAT );
-   //   ((WOStatic*)wo)->setODEPrimType( ODE_PRIM_TYPE::PLANE );
-   //   wo->setPosition( Vector(0,0,0) );
-   //   wo->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-   //   wo->getModel()->getModelDataShared()->getModelMeshes().at(0)->getSkins().at(0).getMultiTextureSet().at(0)->setTextureRepeats( 5.0f );
-   //   wo->setLabel( "Grass" );
-   //   worldLst->push_back( wo );
-   //}
+   // Car Models Loaded in
 
-   //{
-   //   //Create the infinite grass plane that uses NVIDIAPhysX(the floor)
-   //   WO* wo = WONVStaticPlane::New( grass, Vector( 1, 1, 1 ), MESH_SHADING_TYPE::mstFLAT );
-   //   wo->setPosition( Vector( 0, 0, 0 ) );
-   //   wo->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-   //   wo->getModel()->getModelDataShared()->getModelMeshes().at( 0 )->getSkins().at( 0 ).getMultiTextureSet().at( 0 )->setTextureRepeats( 5.0f );
-   //   wo->setLabel( "Grass" );
-   //   worldLst->push_back( wo );
-   //}
+   //std::string cars("../../../modules/SpeedRacer/mm/models/porsche/Porsche_935_2019.obj");
+   //std::string nissan("../../../modules/SpeedRacer/mm/models/nissan/NISSAN-GTR.obj");
+   //std::string acura("../../../modules/SpeedRacer/mm/models/acura/Acura_NSX_1997.mtl");
+   //std::string ferrari("../../../modules/SpeedRacer/mm/models/ferrrari/uploads_files_3433296_Ferrari+Concept1.mtl");
+   std::string porsche("../../../modules/SpeedRacer/mm/models/porsche/low_poly_911.dae");
 
-   //{
-   //   //Create the infinite grass plane (the floor)
-   //   WO* wo = WONVPhysX::New( shinyRedPlasticCube, Vector( 1, 1, 1 ), MESH_SHADING_TYPE::mstFLAT );
-   //   wo->setPosition( Vector( 0, 0, 50.0f ) );
-   //   wo->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-   //   wo->setLabel( "Grass" );
-   //   worldLst->push_back( wo );
-   //}
+   // 4 car models loaded in from standard list ~ possibly add more
 
-   //{
-   //   WO* wo = WONVPhysX::New( shinyRedPlasticCube, Vector( 1, 1, 1 ), MESH_SHADING_TYPE::mstFLAT );
-   //   wo->setPosition( Vector( 0, 0.5f, 75.0f ) );
-   //   wo->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-   //   wo->setLabel( "Grass" );
-   //   worldLst->push_back( wo );
-   //}
-
-   //{
-   //   WO* wo = WONVDynSphere::New( ManagerEnvironmentConfiguration::getVariableValue( "sharedmultimediapath" ) + "/models/sphereRp5.wrl", Vector( 1.0f, 1.0f, 1.0f ), mstSMOOTH );
-   //   wo->setPosition( 0, 0, 100.0f );
-   //   wo->setLabel( "Sphere" );
-   //   this->worldLst->push_back( wo );
-   //}
-
-   //{
-   //   WO* wo = WOHumanCal3DPaladin::New( Vector( .5, 1, 1 ), 100 );
-   //   ((WOHumanCal3DPaladin*)wo)->rayIsDrawn = false; //hide the "leg ray"
-   //   ((WOHumanCal3DPaladin*)wo)->isVisible = false; //hide the Bounding Shell
-   //   wo->setPosition( Vector( 20, 20, 20 ) );
-   //   wo->setLabel( "Paladin" );
-   //   worldLst->push_back( wo );
-   //   actorLst->push_back( wo );
-   //   netLst->push_back( wo );
-   //   this->setActor( wo );
-   //}
-   //
-   //{
-   //   WO* wo = WOHumanCyborg::New( Vector( .5, 1.25, 1 ), 100 );
-   //   wo->setPosition( Vector( 20, 10, 20 ) );
-   //   wo->isVisible = false; //hide the WOHuman's bounding box
-   //   ((WOHuman*)wo)->rayIsDrawn = false; //show the 'leg' ray
-   //   wo->setLabel( "Human Cyborg" );
-   //   worldLst->push_back( wo );
-   //   actorLst->push_back( wo ); //Push the WOHuman as an actor
-   //   netLst->push_back( wo );
-   //   this->setActor( wo ); //Start module where human is the actor
-   //}
-
-   //{
-   //   //Create and insert the WOWheeledVehicle
-   //   std::vector< std::string > wheels;
-   //   std::string wheelStr( "../../../shared/mm/models/WOCar1970sBeaterTire.wrl" );
-   //   wheels.push_back( wheelStr );
-   //   wheels.push_back( wheelStr );
-   //   wheels.push_back( wheelStr );
-   //   wheels.push_back( wheelStr );
-   //   WO* wo = WOCar1970sBeater::New( "../../../shared/mm/models/WOCar1970sBeater.wrl", wheels );
-   //   wo->setPosition( Vector( 5, -15, 20 ) );
-   //   wo->setLabel( "Car 1970s Beater" );
-   //   ((WOODE*)wo)->mass = 200;
-   //   worldLst->push_back( wo );
-   //   actorLst->push_back( wo );
-   //   this->setActor( wo );
-   //   netLst->push_back( wo );
-   //}
-
-   // Car Creation list
-   std::vector<WO*> carModels;
+   car1 = WO::New(porsche, Vector(1, 1, 1));
+   car1->setPosition(Vector(5, 0, 1));
+   car1->isVisible = true;
+   car1->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+   car1->setLabel("Nissan");
+   worldLst->push_back(car1);
+   actorLst->push_back(car1);
    
-   // import ferrari
-   WO* ferrari = WO::New("../../../modules/SpeedRacer/mm/models/ferrari/model.dae");
-   ferrari->setPosition(Vector(10, 10, 3)); // start position will depend on terrain
-   ferrari->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-   ferrari->setLabel("Ferrari F8 Tributo");
-   carModels.push_back(ferrari);
-   delete ferrari;
+   car2 = WO::New(porsche, Vector(1, 1, 1));
+   car2->setPosition(Vector(0, 0, 1));
+   car2->isVisible = false;
+   car2->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+   car2->setLabel("Porsche 911");
+   worldLst->push_back(car2);
+   actorLst->push_back(car2);
 
-   // import porsche
-   WO* porsche = WO::New("../../../modules/SpeedRacer/mm/models/porsche/Porsche_935_2019.obj");
-   porsche->setPosition(Vector(10, 10, 3)); // start position will depend on terrain
-   porsche->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-   porsche->setLabel("Porsche 911");
-   carModels.push_back(porsche);
-   delete porsche;
- 
-   WO* wo = WO::New(wheeledCar, Vector(1, 1, 1));
-   wo->setPosition(Vector(0, 0, 0));
-   wo->isVisible = true;
-   wo->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-   wo->setLabel("Spider2");
-   worldLst->push_back(wo);
-   actorLst->push_back(wo);
+   car3 = WO::New(porsche, Vector(1, 1, 1));
+   car3->setPosition(Vector(8, 0, 1));
+   car3->isVisible = false;
+   car3->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+   car3->setLabel("Car3");
+   worldLst->push_back(car3);
+   actorLst->push_back(car3);
 
+   car4 = WO::New(porsche, Vector(1, 1, 1));
+   car4->setPosition(Vector(10, 0, 1));
+   car4->isVisible = false;
+   car4->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+   car4->setLabel("Car4");
+   worldLst->push_back(car4);
+   actorLst->push_back(car4);
 
-   WO* cube = WO::New(shinyRedPlasticCube, Vector(1, 1, 1), MESH_SHADING_TYPE::mstFLAT);
-   cube->setPosition(Vector(15, 0, 2));
-   cube->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-   cube->setLabel("CUBE");
-   worldLst->push_back(cube);
-
-
-   //worldLst->push_back(carModels[0]);
    
    //Make a Dear Im Gui instance via the WOImGui in the engine... This calls
    //the default Dear ImGui demo that shows all the features... To create your own,
    //inherit from WOImGui and override WOImGui::drawImGui_for_this_frame(...) (among any others you need).
    WOImGui* gui = WOImGui::New( nullptr );
    gui->setLabel( "My Gui" );
-   /**
    gui->subscribe_drawImGuiWidget(
-      [this, gui]() //this is a lambda, the capture clause is in [], the input argument list is in (), and the body is in {}
-      {
-         ImGui::ShowDemoWindow(); //Displays the default ImGui demo from C:/repos/aburn/engine/src/imgui_implot/implot_demo.cpp
-         WOImGui::draw_AftrImGui_Demo( gui ); //Displays a small Aftr Demo from C:/repos/aburn/engine/src/aftr/WOImGui.cpp
-         ImPlot::ShowDemoWindow(); //Displays the ImPlot demo using ImGui from C:/repos/aburn/engine/src/imgui_implot/implot_demo.cpp
-      } );
+       [this, gui]() {
+           static WO* focus = car1; // Set the initial focus to car1
+           ImVec4 bgColor = ImVec4(0.2f, 0.2f, 0.2f, 1.0f); // Background color for the GUI
+           if (ImGui::Begin("Main Menu")) {
+               const char* items[] = { car1->getLabel().c_str(), car2->getLabel().c_str(), car3->getLabel().c_str(), car4->getLabel().c_str() }; // List of items including Car4
+               static int item_current_idx = 0; // Index of selected item
+
+               if (ImGui::BeginCombo("Select Car", items[item_current_idx])) {
+                   for (int i = 0; i < IM_ARRAYSIZE(items); i++) {
+                       bool is_selected = (item_current_idx == i);
+                       if (ImGui::Selectable(items[i], is_selected)) {
+                           item_current_idx = i;
+                           // Toggle visibility based on selection
+                           if (i == 0) {
+                               focus = car1;
+                               car1->isVisible = true;
+                               car2->isVisible = false;
+                               car3->isVisible = false;
+                               car4->isVisible = false;
+                           }
+                           else if (i == 1) {
+                               focus = car2;
+                               car1->isVisible = false;
+                               car2->isVisible = true;
+                               car3->isVisible = false;
+                               car4->isVisible = false;
+                           }
+                           else if (i == 2) {
+                               focus = car3;
+                               car1->isVisible = false;
+                               car2->isVisible = false;
+                               car3->isVisible = true;
+                               car4->isVisible = false;
+                           }
+                           else if (i == 3) {
+                               focus = car4;
+                               car1->isVisible = false;
+                               car2->isVisible = false;
+                               car3->isVisible = false;
+                               car4->isVisible = true;
+                           }
+                       }
+                       if (is_selected) {
+                           ImGui::SetItemDefaultFocus();
+                       }
+                   }
+                   ImGui::EndCombo();
+               }
+               ImGui::End();
+           }
+       });
    this->worldLst->push_back( gui );
-   **/
+ 
 
    //createSpeedRacerWayPoints();
 }
