@@ -248,14 +248,16 @@ void Aftr::GLViewSpeedRacer::loadMap()
    //std::string cars("../../../modules/SpeedRacer/mm/models/porsche/Porsche_935_2019.obj");
    //std::string car(ManagerEnvironmentConfiguration::getSMM() + "/models/rcx_treads.wrl");
    std::string cars2("../../../modules/SpeedRacer/mm/models/porsche/low_poly_911.dae");
+   //std::string lambo("../../../modules/SpeedRacer/mm/models/lamborghini/model.dae");
+   std::string ford("../../../modules/SpeedRacer/mm/models/ford/LowPoly Muscle Cougar xr1970.dae");
 
    // Car Objects 1 - 4
    
-   car1 = WO::New(cars2, Vector(1, 1, 1));
-   car1->setPosition(Vector(10, 0, 2));
+   car1 = WO::New(ford, Vector(1.4, 1.4, 1.4));
+   car1->setPosition(Vector(10, 0, 1.5));
    car1->isVisible = true;
    car1->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-   car1->setLabel("Car1");
+   car1->setLabel("Ford Muscle Cougar");
    worldLst->push_back(car1);
    actorLst->push_back(car1);
 
@@ -580,6 +582,8 @@ void Aftr::GLViewSpeedRacer::loadMap()
            if (ImGui::Begin("Main Menu")) {
                const char* items[] = { car1->getLabel().c_str(), car2->getLabel().c_str(), car3->getLabel().c_str(), car4->getLabel().c_str() }; // List of items including Car4
                static int item_current_idx = 0; // Index of selected item
+               const char* songs[] = { "song1" };
+               static int songs_current_idx = 0; // Index of selected item
 
                if (ImGui::BeginCombo("Select Car", items[item_current_idx])) {
                    for (int i = 0; i < IM_ARRAYSIZE(items); i++) {
@@ -622,6 +626,15 @@ void Aftr::GLViewSpeedRacer::loadMap()
                    }
                    ImGui::EndCombo();
                }
+
+               ImGui::Spacing(); // Add spacing between combo boxes
+
+               if (ImGui::BeginCombo("Select Music", songs[songs_current_idx])) {
+
+               ImGui::EndCombo();
+               }
+               
+
                ImGui::End();
            }
        });
