@@ -200,7 +200,7 @@ void Aftr::GLViewSpeedRacer::loadMap()
    //SkyBox Textures readily available
    std::vector< std::string > skyBoxImageNames; //vector to store texture paths
    skyBoxImageNames.push_back( ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/space_gray_matter+6.jpg" );
-
+   //skyBoxImageNames.push_back("../../../modules/SpeedRacer/mm/images/cobblestone_street_night_2k.hdr");
    {
       //Create a light
       float ga = 0.1f; //Global Ambient Light level for this module
