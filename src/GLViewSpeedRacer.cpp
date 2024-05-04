@@ -99,6 +99,9 @@ void GLViewSpeedRacer::updateWorld()
    GLView::updateWorld(); //Just call the parent's update world first.
                           //If you want to add additional functionality, do it after
                           //this call.
+   this->cam->setPosition(car1->getPosition() + Vector(-15, 1, 5));
+ 
+   
 }
 
 
@@ -126,9 +129,26 @@ void GLViewSpeedRacer::onMouseMove( const SDL_MouseMotionEvent& e )
 }
 
 NetMessengerClient* client;
-void GLViewSpeedRacer::onKeyDown(const SDL_KeyboardEvent& key)
-{
+void GLViewSpeedRacer::onKeyDown(const SDL_KeyboardEvent& key) {
     GLView::onKeyDown(key);
+    if (key.keysym.sym == SDLK_r) { // Reset camera position
+        // Get the car's position
+        Vector carPosition = car1->getPosition();
+
+        // Get the car's look direction
+        Vector carLookDirection = car1->getLookDirection();
+
+        // Define the camera offset relative to the car's position
+        Vector cameraOffsetRelativeToCar(10, -10, -10); // Adjust as needed
+
+        // Compute the camera position based on the car's position, look direction, and offset
+        Vector cameraPosition = carPosition - carLookDirection * cameraOffsetRelativeToCar;
+
+        // Set the camera position
+        this->cam->setPosition(cameraPosition);
+        this->cam->rotateAboutGlobalZ(90.0f);
+    }
+
 
     float moveSpeed = 1.0f; // Adjust as needed
     float turnAngle = 0.1f; // Adjust as needed
@@ -136,33 +156,52 @@ void GLViewSpeedRacer::onKeyDown(const SDL_KeyboardEvent& key)
     // Set the movement direction based on the pressed keys
     Vector movement(0, 0, 0);
 
-    if (key.keysym.sym == SDLK_w) // Move forwards
-    {
+    // Flag variables to control message sending
+    bool sendMovementMessage = false;
+    bool sendRotationMessage = false;
+
+    if (key.keysym.sym == SDLK_w) { // Move forwards
         // Move the car in the direction it is facing (its look direction)
         movement += car1->getLookDirection() * moveSpeed;
         car1->moveRelative(movement);
-    }
-    if (key.keysym.sym == SDLK_s) // Move backwards
-    {
-        // Move the car backwards along its look direction
-        movement -= car1->getLookDirection() * moveSpeed;
-        car1->moveRelative(movement);
+        sendMovementMessage = true;
     }
 
-    // Handle continuous turning
-    if (key.keysym.sym == SDLK_a) // Turn left
-    {
-        // Rotate the car counterclockwise (left turn) around its vertical axis (z-axis)
+    // Handle continuous turning and send net messages
+    if (key.keysym.sym == SDLK_a) { // Turn left
+        // Adjust the rotation of the car counterclockwise (left turn)
         car1->rotateAboutGlobalZ(turnAngle);
+        sendRotationMessage = true;
     }
-    if (key.keysym.sym == SDLK_d) // Turn right
-    {
-        // Rotate the car clockwise (right turn) around its vertical axis (z-axis)
+    if (key.keysym.sym == SDLK_d) { // Turn right
+        // Adjust the rotation of the car clockwise (right turn)
         car1->rotateAboutGlobalZ(-turnAngle);
+        sendRotationMessage = true;
+        this->cam->setPosition(car1->getPosition() + Vector(-10, 0, 10));
     }
 
-    // Optionally, you can perform additional actions based on key presses here
+    
+   
+
+    // Send network messages if the corresponding flag is set
+    if (sendMovementMessage || sendRotationMessage) {
+        NetMsgCreateRawWO* netMsg = new NetMsgCreateRawWO();
+        if (sendMovementMessage) {
+            // Set movement data in the message
+            netMsg->xPos = car1->getPosition().x;
+            netMsg->yPos = car1->getPosition().y;
+            netMsg->zPos = car1->getPosition().z;
+        }
+        if (sendRotationMessage) {
+            // Set rotation data in the message
+            netMsg->rotationZ = sendRotationMessage ? (key.keysym.sym == SDLK_a ? turnAngle : -turnAngle) : 0.0f;
+        }
+        client->sendNetMsgSynchronousTCP(*netMsg);
+        delete netMsg;
+    }
 }
+
+
 
 
 void GLViewSpeedRacer::onKeyUp(const SDL_KeyboardEvent& key)
@@ -186,6 +225,8 @@ void Aftr::GLViewSpeedRacer::loadMap()
    this->worldLst = new WorldList(); //WorldList is a 'smart' vector that is used to store WO*'s
    this->actorLst = new WorldList();
    this->netLst = new WorldList();
+
+   client = NetMessengerClient::New("127.0.0.1", ManagerEnvironmentConfiguration::getVariableValue("NetServerTransmitPort"));
 
    ManagerOpenGLState::GL_CLIPPING_PLANE = 1000.0;
    ManagerOpenGLState::GL_NEAR_PLANE = 0.1f;
@@ -276,6 +317,14 @@ void Aftr::GLViewSpeedRacer::loadMap()
    car3->setLabel("Car3");
    worldLst->push_back(car3);
    actorLst->push_back(car3);
+
+   car4 = WO::New(cars2, Vector(1, 1, 1));
+   car4->setPosition(Vector(4, 0, 1));
+   car4->isVisible = false;
+   car4->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+   car4->setLabel("Car4");
+   worldLst->push_back(car4);
+   actorLst->push_back(car4);
 
    car4 = WO::New(cars2, Vector(1, 1, 1));
    car4->setPosition(Vector(4, 0, 1));
@@ -460,6 +509,7 @@ void Aftr::GLViewSpeedRacer::loadMap()
 
    std::string props2(ManagerEnvironmentConfiguration::getSMM() + "/models/generic_medium.obj");
    WO* prop2 = WO::New(props2, Vector(1, 1, 1));
+   prop2->setPosition(Vector(-21, 12.5, 1));
    // Upon async model loaded, set the material properties to achieve a grey texture
    prop2->upon_async_model_loaded([prop2]() {
        auto& meshes = prop2->getModel()->getModelDataShared()->getModelMeshes();
@@ -563,11 +613,10 @@ void Aftr::GLViewSpeedRacer::loadMap()
 
    worldLst->push_back(prop5);
    actorLst->push_back(prop5);
-   
-   prop5->rotateAboutGlobalZ(2.1f); // Adjust the angle as needed
 
-   worldLst->push_back(prop5);
-   actorLst->push_back(prop5);
+
+
+
 
 
    //Make a Dear Im Gui instance via the WOImGui in the engine... This calls
