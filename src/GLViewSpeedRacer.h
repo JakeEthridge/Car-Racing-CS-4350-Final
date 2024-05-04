@@ -61,6 +61,9 @@ public:
    WO* prop5;
    WO* prop6;
 
+
+
+
 protected:
    GLViewSpeedRacer( const std::vector< std::string >& args );
    virtual void onCreate();   
