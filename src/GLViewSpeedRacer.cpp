@@ -1,4 +1,5 @@
 #include "GLViewSpeedRacer.h"
+#include "irrKlang.h"
 
 #include "WorldList.h" //This is where we place all of our WOs
 #include "ManagerOpenGLState.h" //We can change OpenGL State attributes with this
@@ -43,6 +44,8 @@
 #include "GLView.h"
 
 using namespace Aftr;
+
+using namespace irrklang;
 
 GLViewSpeedRacer* GLViewSpeedRacer::New( const std::vector< std::string >& args )
 {
@@ -626,6 +629,11 @@ void Aftr::GLViewSpeedRacer::loadMap()
    gui->setLabel( "My Gui" );
    gui->subscribe_drawImGuiWidget(
        [this, gui]() {
+
+           // IrrKlang Sound Device
+           ISoundEngine* engine = createIrrKlangDevice();
+           // audio from opengameart.org
+           ISound* s = engine->play2D("../../../modules/Assignment3/mm/sounds/astro.mp3", true);
            static WO* focus = car1; // Set the initial focus to car1
            ImVec4 bgColor = ImVec4(0.2f, 0.2f, 0.2f, 1.0f); // Background color for the GUI
            if (ImGui::Begin("Main Menu")) {
