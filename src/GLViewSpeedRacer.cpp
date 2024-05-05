@@ -297,9 +297,10 @@ void Aftr::GLViewSpeedRacer::loadMap()
 
    // Car Objects 1 - 4
    
-   car1 = WO::New(ford, Vector(1.4, 1.4, 1.4));
-   car1->setPosition(Vector(10, 0, 1.5));
+   car1 = WO::New(ford, Vector(8.0, 8.0, 8.0));
+   car1->setPosition(Vector(10, 0, 3.5));
    car1->isVisible = true;
+   car1->rotateAboutGlobalZ(-4.60f);
    car1->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
    car1->setLabel("Ford Muscle Cougar");
    worldLst->push_back(car1);
