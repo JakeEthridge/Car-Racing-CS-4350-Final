@@ -620,8 +620,8 @@ void Aftr::GLViewSpeedRacer::loadMap()
 
 
 
-
-
+   // Default song
+   engine->play2D("../../../modules/SpeedRacer/mm/sounds/ride.mp3", true);
 
    //Make a Dear Im Gui instance via the WOImGui in the engine... This calls
    //the default Dear ImGui demo that shows all the features... To create your own,
@@ -630,17 +630,12 @@ void Aftr::GLViewSpeedRacer::loadMap()
    gui->setLabel( "My Gui" );
    gui->subscribe_drawImGuiWidget(
        [this, gui]() {
-
-           // IrrKlang Sound Device
-           ISoundEngine* engine = createIrrKlangDevice();
-           // audio from opengameart.org
-           ISound* s = engine->play2D("../../../modules/Assignment3/mm/sounds/astro.mp3", true);
            static WO* focus = car1; // Set the initial focus to car1
            ImVec4 bgColor = ImVec4(0.2f, 0.2f, 0.2f, 1.0f); // Background color for the GUI
            if (ImGui::Begin("Main Menu")) {
                const char* items[] = { car1->getLabel().c_str(), car2->getLabel().c_str(), car3->getLabel().c_str(), car4->getLabel().c_str() }; // List of items including Car4
                static int item_current_idx = 0; // Index of selected item
-               const char* songs[] = { "song1" };
+               const char* songs[] = { "Ride Wit Me", "Astro", "Tokyo Drift", "Bandolero"};
                static int songs_current_idx = 0; // Index of selected item
 
                if (ImGui::BeginCombo("Select Car", items[item_current_idx])) {
@@ -689,10 +684,39 @@ void Aftr::GLViewSpeedRacer::loadMap()
 
                if (ImGui::BeginCombo("Select Music", songs[songs_current_idx])) {
 
+                   for (int i = 0; i < IM_ARRAYSIZE(songs); i++) {
+                       bool is_selected = (songs_current_idx == i);
+                       if (ImGui::Selectable(songs[i], is_selected)) {
+                           songs_current_idx = i;
+                           if (i == 0) {
+                               engine->stopAllSounds();
+                               engine->setSoundVolume(1);
+                               engine->play2D("../../../modules/SpeedRacer/mm/sounds/ride.mp3", true);
+                           }
+                           else if (i == 1) {
+                               engine->stopAllSounds();
+                               engine->setSoundVolume(.5f);
+                               engine->play2D("../../../modules/SpeedRacer/mm/sounds/astro.mp3", true);
+                           }
+                           else if (i == 2) {
+                               engine->stopAllSounds();
+                               engine->setSoundVolume(1);
+                               engine->play2D("../../../modules/SpeedRacer/mm/sounds/tokyo.mp3", true);
+                           }
+                           else if (i == 3) {
+                               engine->stopAllSounds();
+                               engine->setSoundVolume(1);
+                               engine->play2D("../../../modules/SpeedRacer/mm/sounds/band.mp3", true);
+                           }
+                       }
+                   }
                ImGui::EndCombo();
                }
-               
 
+               static bool on = true;
+               if (ImGui::Button("Stop Music")) { 
+                   engine->stopAllSounds();
+               }
                ImGui::End();
            }
        });
