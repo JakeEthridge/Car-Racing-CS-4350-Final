@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GLView.h"
+#include "irrKlang.h"
 
 namespace Aftr
 {
@@ -66,7 +67,9 @@ public:
 
 protected:
    GLViewSpeedRacer( const std::vector< std::string >& args );
-   virtual void onCreate();   
+   virtual void onCreate();  
+   // IrrKlang Sound Device
+   irrklang::ISoundEngine* engine = irrklang::createIrrKlangDevice();
 };
 
 /** \} */

@@ -28,7 +28,6 @@ include( ${aftrModuleCommonProjectIncludesAndLibs} )
 
 print_aftr_cmake_vars()
 
-#Set CMAKE_CXX_FLAGS if any default flags need modification
 #SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${warnings} ${cppFlags}" )
 #SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${warnings}" )
 MESSAGE( STATUS "CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}" )
@@ -58,7 +57,7 @@ endif()
 IF( WIN32 ) #MSVC Compiler library paths
    TARGET_LINK_LIBRARIES( ${PROJECT_NAME} PRIVATE
                 #optimized "${AFTR_USERLAND_LIB_PATH}/mySampleLibraryNeededInThisModule.lib"
-                #    debug "${AFTR_USERLAND_LIB_PATH}/mySampleLibraryNeededInThisModule_debug.lib"
+                   debug "../../../modules/SpeedRacer/mm/libraries/irrKlang-64bit-1.6.0/lib/Winx64-visualStudio/irrKlang"
                 #optimized "${CMAKE_SOURCE_DIR}/lib${AFTR_NBITS}/myLocalLib.lib" #Located in ../lib64/ or ../lib32/
                 #    debug "${CMAKE_SOURCE_DIR}/lib${AFTR_NBITS}/myLocalLib.lib"
                          )
