@@ -70,6 +70,7 @@ protected:
    virtual void onCreate();  
    // IrrKlang Sound Device
    irrklang::ISoundEngine* engine = irrklang::createIrrKlangDevice();
+   float volume = 1;
 };
 
 /** \} */
