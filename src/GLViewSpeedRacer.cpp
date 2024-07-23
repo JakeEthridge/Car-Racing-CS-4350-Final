@@ -5,6 +5,7 @@
 #include "ManagerOpenGLState.h" //We can change OpenGL State attributes with this
 #include "Axes.h" //We can set Axes to on/off with this
 #include "PhysicsEngineODE.h"
+//#include "PxScene.h"
 
 //Different WO used by this module
 #include "WO.h"
@@ -268,20 +269,28 @@ void Aftr::GLViewSpeedRacer::loadMap()
       worldLst->push_back( wo );
    }
 
-   {
+   /*{
        WO* wo = WO::New(track, Vector(3, 3, 3), MESH_SHADING_TYPE::mstFLAT);
        wo->setPosition(Vector(0, 0, 0));
        wo->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
        worldLst->push_back(wo);
-   }
-   
+   }*/
+
+   /*{
+       WONVPhysX* physTrack = WONVPhysX::New(track, Vector(3, 3, 3), MESH_SHADING_TYPE::mstFLAT);
+       physTrack->setPosition(Vector(0, 0, 0));
+       physTrack->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+       worldLst->push_back(physTrack);
+       PxScene::setGravity();
+   }*/
+  
    
    // Car Models loaded in
 
    //std::string cars("../../../modules/SpeedRacer/mm/models/porsche/Porsche_935_2019.obj");
    //std::string car(ManagerEnvironmentConfiguration::getSMM() + "/models/rcx_treads.wrl");
    std::string cars2("../../../modules/SpeedRacer/mm/models/porsche/low_poly_911.dae");
-   //std::string lambo("../../../modules/SpeedRacer/mm/models/lamborghini/model.dae");
+   std::string dodge("../../../modules/SpeedRacer/mm/models/car2/source/dodge.fbx");
    std::string ford("../../../modules/SpeedRacer/mm/models/ford/LowPoly Muscle Cougar xr1970.dae");
 
    // Car Objects 1 - 4
@@ -295,8 +304,8 @@ void Aftr::GLViewSpeedRacer::loadMap()
    worldLst->push_back(car1);
    actorLst->push_back(car1);
 
-   car2 = WO::New(cars2, Vector(1, 1, 1));
-   car2->setPosition(Vector(8, 0, 1));
+   car2 = WO::New(dodge, Vector(.1, .1, .1));
+   car2->setPosition(Vector(48, -40, -2));
    car2->isVisible = false;
    car2->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
    car2->setLabel("Car2");
