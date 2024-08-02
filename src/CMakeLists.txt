@@ -56,9 +56,29 @@ endif()
 #This section is already populated with default values from: ../../../include/cmake/aftrModuleCommonProjectIncludesAndLibs.cmake
 IF( WIN32 ) #MSVC Compiler library paths
    TARGET_LINK_LIBRARIES( ${PROJECT_NAME} PRIVATE
+               # from repo install
+               optimized "../../../modules/SpeedRacer/mm/libraries/irrKlang-64bit-1.6.0/lib/Winx64-visualStudio/irrKlang.lib"
+               debug "../../../modules/SpeedRacer/mm/libraries/irrKlang-64bit-1.6.0/lib/Winx64-visualStudio/irrKlang.lib"
+               optimized "../../../modules/SpeedRacer/mm/libraries/PhysX/release/PhysX_64.lib"
+               debug "../../../modules/SpeedRacer/mm/libraries/PhysX/debug/PhysX_64.lib"
+               optimized "../../../modules/SpeedRacer/mm/libraries/PhysX/release/PhysXFoundation_64.lib"
+               debug "../../../modules/SpeedRacer/mm/libraries/PhysX/debug/PhysXFoundation_64.lib"
+               optimized "../../../modules/SpeedRacer/mm/libraries/PhysX/release/PhysXCommon_64.lib"
+               debug "../../../modules/SpeedRacer/mm/libraries/PhysX/debug/PhysXCommon_64.lib"
+               optimized "../../../modules/SpeedRacer/mm/libraries/PhysX/release/PhysXCooking_64.lib"
+               debug "../../../modules/SpeedRacer/mm/libraries/PhysX/debug/PhysXCooking_64.lib"
+               optimized "../../../modules/SpeedRacer/mm/libraries/PhysX/release/PhysXExtensions_static_64.lib"
+               debug "../../../modules/SpeedRacer/mm/libraries/PhysX/debug/PhysXExtensions_static_64.lib"
+               optimized "../../../modules/SpeedRacer/mm/libraries/PhysX/release/PhysXPvdSDK_static_64.lib"
+               debug "../../../modules/SpeedRacer/mm/libraries/PhysX/debug/PhysXPvdSDK_static_64.lib"
+               optimized "../../../modules/SpeedRacer/mm/libraries/PhysX/release/PVDRuntime_64.lib"
+               debug "../../../modules/SpeedRacer/mm/libraries/PhysX/debug/PVDRuntime_64.lib"
+               optimized "../../../modules/SpeedRacer/mm/libraries/PhysX/release/SceneQuery_static_64.lib"
+               debug "../../../modules/SpeedRacer/mm/libraries/PhysX/debug/SceneQuery_static_64.lib"
+               # from local install
                optimized "${AFTR_USERLAND_LIB_PATH}/irrKlang/irrKlang.lib"
                debug "${AFTR_USERLAND_LIB_PATH}/irrKlang/irrKlang.lib"
-                optimized "${AFTR_USERLAND_LIB_PATH}/PhysX/release/PhysX_64.lib"
+               optimized "${AFTR_USERLAND_LIB_PATH}/PhysX/release/PhysX_64.lib"
                debug "${AFTR_USERLAND_LIB_PATH}/PhysX/debug/PhysX_64.lib"
                optimized "${AFTR_USERLAND_LIB_PATH}/PhysX/release/PhysXFoundation_64.lib"
                debug "${AFTR_USERLAND_LIB_PATH}/PhysX/debug/PhysXFoundation_64.lib"
@@ -74,10 +94,6 @@ IF( WIN32 ) #MSVC Compiler library paths
                debug "${AFTR_USERLAND_LIB_PATH}/PhysX/debug/PVDRuntime_64.lib"
                optimized "${AFTR_USERLAND_LIB_PATH}/PhysX/release/SceneQuery_static_64.lib"
                debug "${AFTR_USERLAND_LIB_PATH}/PhysX/debug/SceneQuery_static_64.lib"
-                #optimized "${AFTR_USERLAND_LIB_PATH}/mySampleLibraryNeededInThisModule.lib"
-                #    debug "${AFTR_USERLAND_LIB_PATH}/mySampleLibraryNeededInThisModule_debug.lib"
-                #optimized "${CMAKE_SOURCE_DIR}/lib${AFTR_NBITS}/myLocalLib.lib" #Located in ../lib64/ or ../lib32/
-                #    debug "${CMAKE_SOURCE_DIR}/lib${AFTR_NBITS}/myLocalLib.lib"
                          )
 ENDIF()
 
@@ -91,10 +107,14 @@ ENDIF()
 #This section is already populated with default values from: ../../../include/cmake/aftrModuleCommonProjectIncludesAndLibs.cmake
 #This can be made WIN32 or UNIX specific, depending on the platform, if desired.
 TARGET_INCLUDE_DIRECTORIES( ${PROJECT_NAME} PRIVATE 
+                            # from local folder
                             "${AFTR_USR_INCLUDE_DIR}/../irrKlang/"
                             "${AFTR_USR_INCLUDE_DIR}/../PhysX/"
-                           #"${AFTR_USR_INCLUDE_DIR}"
-                           #"${CMAKE_SOURCE_DIR}/../my3rdPartyLib/include/"
+                           # from repo shared folder
+                           "../../../modules/SpeedRacer/mm/libraries/irrKlang-64bit-1.6.0/include"
+                           "../../../modules/SpeedRacer/mm/libraries/Physx/physx/include"
+                           "../../../modules/SpeedRacer/mm/libraries/Physx/pxshared/include"
+
                           )
 
 
@@ -102,4 +122,4 @@ TARGET_INCLUDE_DIRECTORIES( ${PROJECT_NAME} PRIVATE
 SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${warnings} ${cppFlags}" )  #These two lines should be removed sln 3 aug 2022
 SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${warnings}" )                  #These two lines should be removed sln 3 aug 2022
 MESSAGE( STATUS "CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}" )
-MESSAGE( STATUS "CMAKE_C_FLAGS  : ${CMAKE_C_FLAGS}" )                          
+MESSAGE( STATUS "CMAKE_C_FLAGS  : ${CMAKE_C_FLAGS}" )                  
