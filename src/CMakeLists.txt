@@ -28,7 +28,6 @@ include( ${aftrModuleCommonProjectIncludesAndLibs} )
 
 print_aftr_cmake_vars()
 
-#Set CMAKE_CXX_FLAGS if any default flags need modification
 #SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${warnings} ${cppFlags}" )
 #SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${warnings}" )
 MESSAGE( STATUS "CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}" )
@@ -85,10 +84,6 @@ ENDIF()
 #This section is already populated with default values from: ../../../include/cmake/aftrModuleCommonProjectIncludesAndLibs.cmake
 IF( UNIX ) #Linux, Apple, *NIX platforms (see ../../../include/cmake/aftrModuleCommonProjectIncludesAndLibs.cmake for more details)
    TARGET_LINK_LIBRARIES( ${PROJECT_NAME} PRIVATE
-                #optimized "${AFTR_USERLAND_LIB_PATH}/mySampleLibraryNeededInThisModule.lib"
-                #    debug "${AFTR_USERLAND_LIB_PATH}/mySampleLibraryNeededInThisModule_debug.lib"
-                #optimized "${CMAKE_SOURCE_DIR}/lib${AFTR_NBITS}/myLocalLib.lib" #Located in ../lib64/ or ../lib32/
-                #    debug "${CMAKE_SOURCE_DIR}/lib${AFTR_NBITS}/myLocalLib.lib"
                 #          "mySystemInstalledlib" #called libMySystemInstalledlib.a (perhaps in /usr/lib64/)
                         )
 ENDIF()

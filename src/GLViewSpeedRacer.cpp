@@ -215,7 +215,7 @@ bool GLViewSpeedRacer::updateLapPending = false;
 bool GLViewSpeedRacer::isTimerRunning = false;
 Uint32 GLViewSpeedRacer::timerStartTime = 0;
 int GLViewSpeedRacer::resetTime = 10;
- Uint32 GLViewSpeedRacer::pausedTime = 0;
+Uint32 GLViewSpeedRacer::pausedTime = 0;
 void GLViewSpeedRacer::onKeyDown(const SDL_KeyboardEvent& key) {
     GLView::onKeyDown(key);
     Car* currentCar = nullptr;
@@ -348,7 +348,7 @@ void GLViewSpeedRacer::onKeyDown(const SDL_KeyboardEvent& key) {
             client->sendNetMsgSynchronousTCP(visibilityMsg);
         }
     }
-   
+
     // Handle car visibility and position based on key presses
     if (key.keysym.sym == SDLK_s) { // Down arrow key
         soundEngine->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Driving.wav").c_str(), true);
@@ -465,31 +465,31 @@ void GLViewSpeedRacer::onKeyDown(const SDL_KeyboardEvent& key) {
             client->sendNetMsgSynchronousTCP(visibilityMsg);
         }
     }
-            if (key.keysym.sym == SDLK_1)
-            {
-                active_keys[SDLK_1] = true;
-            }
-            if (key.keysym.sym == SDLK_4)
-            {
-                active_keys[SDLK_4] = true;
-            }
-            if (key.keysym.sym == SDLK_3)
-            {
-                active_keys[SDLK_3] = true;
-            }
-            if (key.keysym.sym == SDLK_2)
-            {
-                active_keys[SDLK_2] = true;
-            }
-            // Handle 0 key press to increment the lap number
-            if (key.keysym.sym == SDLK_0) {
-                lapNumber++;
-                if (lapNumber >= 3) {
-                    // Optional: handle additional logic when the player wins
-                    std::cout << "Player Wins!" << std::endl;
-                }
-            }
+    if (key.keysym.sym == SDLK_1)
+    {
+        active_keys[SDLK_1] = true;
+    }
+    if (key.keysym.sym == SDLK_4)
+    {
+        active_keys[SDLK_4] = true;
+    }
+    if (key.keysym.sym == SDLK_3)
+    {
+        active_keys[SDLK_3] = true;
+    }
+    if (key.keysym.sym == SDLK_2)
+    {
+        active_keys[SDLK_2] = true;
+    }
+    // Handle 0 key press to increment the lap number
+    if (key.keysym.sym == SDLK_0) {
+        lapNumber++;
+        if (lapNumber >= 3) {
+            // Optional: handle additional logic when the player wins
+            std::cout << "Player Wins!" << std::endl;
         }
+    }
+}
 
 void GLViewSpeedRacer::onKeyUp(const SDL_KeyboardEvent& key)
 {
@@ -498,26 +498,26 @@ void GLViewSpeedRacer::onKeyUp(const SDL_KeyboardEvent& key)
         soundEngine->stopAllSounds();
     }
     if (key.keysym.sym == SDLK_UP) {
-		soundEngine->stopAllSounds();
-	}
-    if(key.keysym.sym == SDLK_LEFT) {
-		soundEngine->stopAllSounds();
-	}
+        soundEngine->stopAllSounds();
+    }
+    if (key.keysym.sym == SDLK_LEFT) {
+        soundEngine->stopAllSounds();
+    }
     if (key.keysym.sym == SDLK_RIGHT) {
         soundEngine->stopAllSounds();
-	}
+    }
     if (key.keysym.sym == SDLK_s) {
-		soundEngine->stopAllSounds();
-	}
+        soundEngine->stopAllSounds();
+    }
     if (key.keysym.sym == SDLK_w) {
         soundEngine->stopAllSounds();
     }
     if (key.keysym.sym == SDLK_a) {
-		soundEngine->stopAllSounds();
-	}
+        soundEngine->stopAllSounds();
+    }
     if (key.keysym.sym == SDLK_d) {
-		soundEngine->stopAllSounds();
-	}
+        soundEngine->stopAllSounds();
+    }
 
     if (key.keysym.sym == SDLK_1)
     {
@@ -769,39 +769,39 @@ void Aftr::GLViewSpeedRacer::loadMap()
         static float backgroundVolume = 1.0f;
         static bool wasSwitchToAnotherGridPressed = false;
         static bool wasSwitchToDefaultGridPressed = false;
-if (ImGui::CollapsingHeader("Racetrack Map Selection")) {
-    bool isSwitchToAnotherGridPressed = ImGui::Button("Track 1");
-    if (isSwitchToAnotherGridPressed && !wasSwitchToAnotherGridPressed) {
-        // Reset loading flag for Terrain 1
-        terrain1Loaded = false;
-        gameState = LOADING;
-        loadingStartTime = SDL_GetTicks();
+        if (ImGui::CollapsingHeader("Racetrack Map Selection")) {
+            bool isSwitchToAnotherGridPressed = ImGui::Button("Track 1");
+            if (isSwitchToAnotherGridPressed && !wasSwitchToAnotherGridPressed) {
+                // Reset loading flag for Terrain 1
+                terrain1Loaded = false;
+                gameState = LOADING;
+                loadingStartTime = SDL_GetTicks();
 
-        // Switch to another grid and apply additional transformations
-        this->switchTerrain(true);
-        this->moveTerrainDown(90.0f);
-        this->rotateTerrain(-0.261799f * 6);
-        this->moveTerrainNegativeX(50.0f * 11);
+                // Switch to another grid and apply additional transformations
+                this->switchTerrain(true);
+                this->moveTerrainDown(90.0f);
+                this->rotateTerrain(-0.261799f * 6);
+                this->moveTerrainNegativeX(50.0f * 11);
 
-        // Stop all sounds and play "Track1.wav"
-        soundEngine->stopAllSounds();
-        soundEngine->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Track1.wav").c_str(), true);
+                // Stop all sounds and play "Track1.wav"
+                soundEngine->stopAllSounds();
+                soundEngine->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Track1.wav").c_str(), true);
 
-        // Set the camera position
-        this->cam->setPosition(0.0f, 0.0f, -500.0f);
+                // Set the camera position
+                this->cam->setPosition(0.0f, 0.0f, -500.0f);
 
-        // Reset flag for the default grid
-        wasSwitchToDefaultGridPressed = false;
+                // Reset flag for the default grid
+                wasSwitchToDefaultGridPressed = false;
 
-        // Send terrain change message
-        sendTerrainChangeMessage(true, 90.0f, -0.261799f * 6, 50.0f * 11);
+                // Send terrain change message
+                sendTerrainChangeMessage(true, 90.0f, -0.261799f * 6, 50.0f * 11);
 
-        // Set the loading state
-        isLoading = true;
-    }
+                // Set the loading state
+                isLoading = true;
+            }
 
-    // Update flag for button press state
-    wasSwitchToAnotherGridPressed = isSwitchToAnotherGridPressed;
+            // Update flag for button press state
+            wasSwitchToAnotherGridPressed = isSwitchToAnotherGridPressed;
 
 
 
@@ -835,125 +835,125 @@ if (ImGui::CollapsingHeader("Racetrack Map Selection")) {
             }
             wasSwitchToDefaultGridPressed = isSwitchToDefaultGridPressed;
         }
-ImGui::Separator();
-if (ImGui::CollapsingHeader("Player 1 Controls")) {
-    if (ImGui::Button("Select Player1")) {
-        this->spawnPlayer1();
+        ImGui::Separator();
+        if (ImGui::CollapsingHeader("Player 1 Controls")) {
+            if (ImGui::Button("Select Player1")) {
+                this->spawnPlayer1();
 
-        // Send network message to spawn Player1 in another instance
-        if (client) {
-            NetMsgSpawnCarPlayers msg;
-            msg.carType = "Player1";
-            client->sendNetMsgSynchronousTCP(msg);
-        }
-    }
-
-    // Define the available car skins
-    static const char* carSkins[] = { "Dodge", "Ford", "Sports Car", "CyberTrunk" };
-    static int selectedSkin = 0;
-
-    ImGui::Combo("Select Car Skin", &selectedSkin, carSkins, IM_ARRAYSIZE(carSkins));
-
-    if (ImGui::Button("Apply Skin")) {
-        if (selectedSkin == 0) {
-            this->spawnPlayer1(); // Switch to Dodge skin locally
-        }
-        else if (selectedSkin == 1) {
-            this->OtherCarSkin1(); // Switch to Ford skin locally
-        }
-        else if (selectedSkin == 2) {
-            this->OtherCarSkin2(); // Switch to Sports Car skin locally
-        }
-        else if (selectedSkin == 3) {
-            this->OtherCarSkin3(); // Switch to CyberTrunk skin locally
-        }
-
-        // Send network message to switch car skin in other instances
-        if (client) {
-            NetMsgChangeCarSkin msg;
-            switch (selectedSkin) {
-            case 0: msg.skinType = "Dodge"; break;
-            case 1: msg.skinType = "Ford"; break;
-            case 2: msg.skinType = "Sports Car"; break;
-            case 3: msg.skinType = "CyberTrunk"; break;
+                // Send network message to spawn Player1 in another instance
+                if (client) {
+                    NetMsgSpawnCarPlayers msg;
+                    msg.carType = "Player1";
+                    client->sendNetMsgSynchronousTCP(msg);
+                }
             }
-            msg.player = "Player1";
-            client->sendNetMsgSynchronousTCP(msg);
-        }
-    }
 
-    // Boost Speed for Player 1
-    if (ImGui::Button("Boost Speed Player 1") && canPressPlayer1SpeedButton) {
-        player1SpeedBoostAmount = ((rand() % 3) + 3); // Randomly select speed boost between 3 and 5
-        moveAmount += player1SpeedBoostAmount;
-        isPlayer1SpeedBoostActive = true;
-        player1SpeedBoostStartTime = SDL_GetTicks();
-        lastPlayer1SpeedBoostTime = SDL_GetTicks();
-        canPressPlayer1SpeedButton = false; // Reset the button press availability
-    }
+            // Define the available car skins
+            static const char* carSkins[] = { "Dodge", "Ford", "Sports Car", "CyberTrunk" };
+            static int selectedSkin = 0;
 
-    ImGui::Text("Updated Speed: %.2f", moveAmount);
-}
+            ImGui::Combo("Select Car Skin", &selectedSkin, carSkins, IM_ARRAYSIZE(carSkins));
 
-// Timer for Player 1 Speed Boost
-if (isPlayer1SpeedBoostActive) {
-    if ((currentTime - player1SpeedBoostStartTime) / 1000.0f >= 10.0f) {
-        moveAmount -= player1SpeedBoostAmount; // Reset the speed after 10 seconds
-        isPlayer1SpeedBoostActive = false;
-        player1SpeedBoostAmount = 0;
-    }
-}
+            if (ImGui::Button("Apply Skin")) {
+                if (selectedSkin == 0) {
+                    this->spawnPlayer1(); // Switch to Dodge skin locally
+                }
+                else if (selectedSkin == 1) {
+                    this->OtherCarSkin1(); // Switch to Ford skin locally
+                }
+                else if (selectedSkin == 2) {
+                    this->OtherCarSkin2(); // Switch to Sports Car skin locally
+                }
+                else if (selectedSkin == 3) {
+                    this->OtherCarSkin3(); // Switch to CyberTrunk skin locally
+                }
 
-if (currentTime - lastPlayer1SpeedBoostTime >= 6000) { // 6 seconds cooldown
-    canPressPlayer1SpeedButton = true;
-}
-
-ImGui::Separator();
-if (ImGui::CollapsingHeader("Player 2 Controls")) {
-    if (ImGui::Button("Select Player2")) {
-        this->spawnPlayer2();
-
-        // Send network message to spawn Player2 in another instance
-        if (client) {
-            NetMsgSpawnCarPlayers msg;
-            msg.carType = "Player2";
-            client->sendNetMsgSynchronousTCP(msg);
-        }
-    }
-
-    // Define the available car skins for Player 2
-    static const char* carSkinsPlayer2[] = { "Dodge", "Ford", "Sports Car", "CyberTrunk" };
-    static int selectedSkinPlayer2 = 0;
-
-    ImGui::Combo("Select Car Skin", &selectedSkinPlayer2, carSkinsPlayer2, IM_ARRAYSIZE(carSkinsPlayer2));
-
-    if (ImGui::Button("Apply Skin")) {
-        if (selectedSkinPlayer2 == 0) {
-            this->spawnPlayer2(); // Switch to Dodge skin locally
-        }
-        else if (selectedSkinPlayer2 == 1) {
-            this->spawnPlayer2Skin1(); // Switch to Ford skin locally
-        }
-        else if (selectedSkinPlayer2 == 2) {
-            this->spawnPlayer2Skin2(); // Switch to Sports Car skin locally
-        }
-        else if (selectedSkinPlayer2 == 3) {
-            this->spawnPlayer2Skin3(); // Switch to CyberTrunk skin locally
-        }
-
-        // Send network message to switch car skin in other instances
-        if (client) {
-            NetMsgChangeCarSkin msg;
-            switch (selectedSkinPlayer2) {
-            case 0: msg.skinType = "Dodge"; break;
-            case 1: msg.skinType = "Ford"; break;
-            case 2: msg.skinType = "Sports Car"; break;
-            case 3: msg.skinType = "CyberTrunk"; break;
+                // Send network message to switch car skin in other instances
+                if (client) {
+                    NetMsgChangeCarSkin msg;
+                    switch (selectedSkin) {
+                    case 0: msg.skinType = "Dodge"; break;
+                    case 1: msg.skinType = "Ford"; break;
+                    case 2: msg.skinType = "Sports Car"; break;
+                    case 3: msg.skinType = "CyberTrunk"; break;
+                    }
+                    msg.player = "Player1";
+                    client->sendNetMsgSynchronousTCP(msg);
+                }
             }
-            msg.player = "Player2";
-            client->sendNetMsgSynchronousTCP(msg);
+
+            // Boost Speed for Player 1
+            if (ImGui::Button("Boost Speed Player 1") && canPressPlayer1SpeedButton) {
+                player1SpeedBoostAmount = ((rand() % 3) + 3); // Randomly select speed boost between 3 and 5
+                moveAmount += player1SpeedBoostAmount;
+                isPlayer1SpeedBoostActive = true;
+                player1SpeedBoostStartTime = SDL_GetTicks();
+                lastPlayer1SpeedBoostTime = SDL_GetTicks();
+                canPressPlayer1SpeedButton = false; // Reset the button press availability
+            }
+
+            ImGui::Text("Updated Speed: %.2f", moveAmount);
         }
-    }
+
+        // Timer for Player 1 Speed Boost
+        if (isPlayer1SpeedBoostActive) {
+            if ((currentTime - player1SpeedBoostStartTime) / 1000.0f >= 10.0f) {
+                moveAmount -= player1SpeedBoostAmount; // Reset the speed after 10 seconds
+                isPlayer1SpeedBoostActive = false;
+                player1SpeedBoostAmount = 0;
+            }
+        }
+
+        if (currentTime - lastPlayer1SpeedBoostTime >= 6000) { // 6 seconds cooldown
+            canPressPlayer1SpeedButton = true;
+        }
+
+        ImGui::Separator();
+        if (ImGui::CollapsingHeader("Player 2 Controls")) {
+            if (ImGui::Button("Select Player2")) {
+                this->spawnPlayer2();
+
+                // Send network message to spawn Player2 in another instance
+                if (client) {
+                    NetMsgSpawnCarPlayers msg;
+                    msg.carType = "Player2";
+                    client->sendNetMsgSynchronousTCP(msg);
+                }
+            }
+
+            // Define the available car skins for Player 2
+            static const char* carSkinsPlayer2[] = { "Dodge", "Ford", "Sports Car", "CyberTrunk" };
+            static int selectedSkinPlayer2 = 0;
+
+            ImGui::Combo("Select Car Skin", &selectedSkinPlayer2, carSkinsPlayer2, IM_ARRAYSIZE(carSkinsPlayer2));
+
+            if (ImGui::Button("Apply Skin")) {
+                if (selectedSkinPlayer2 == 0) {
+                    this->spawnPlayer2(); // Switch to Dodge skin locally
+                }
+                else if (selectedSkinPlayer2 == 1) {
+                    this->spawnPlayer2Skin1(); // Switch to Ford skin locally
+                }
+                else if (selectedSkinPlayer2 == 2) {
+                    this->spawnPlayer2Skin2(); // Switch to Sports Car skin locally
+                }
+                else if (selectedSkinPlayer2 == 3) {
+                    this->spawnPlayer2Skin3(); // Switch to CyberTrunk skin locally
+                }
+
+                // Send network message to switch car skin in other instances
+                if (client) {
+                    NetMsgChangeCarSkin msg;
+                    switch (selectedSkinPlayer2) {
+                    case 0: msg.skinType = "Dodge"; break;
+                    case 1: msg.skinType = "Ford"; break;
+                    case 2: msg.skinType = "Sports Car"; break;
+                    case 3: msg.skinType = "CyberTrunk"; break;
+                    }
+                    msg.player = "Player2";
+                    client->sendNetMsgSynchronousTCP(msg);
+                }
+            }
 
             // Add similar control buttons and logic for Player 2
             if (ImGui::Button("Boost Speed Player 2") && canPressPlayer2SpeedButton) {
@@ -1256,7 +1256,7 @@ void GLViewSpeedRacer::spawnPlayer1() {
     car_new->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
     worldLst->push_back(car_new);
 
-    
+
 }
 void GLViewSpeedRacer::OtherCarSkin1() {
     std::string Car_Up = ManagerEnvironmentConfiguration::getLMM() + "/models/ford/FordCarDirection.dae";
@@ -1294,7 +1294,7 @@ void GLViewSpeedRacer::OtherCarSkin1() {
     car_new->rotateAboutGlobalZ(-4.60f);
     car_new->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
     worldLst->push_back(car_new);
- 
+
 }
 void GLViewSpeedRacer::OtherCarSkin2() {
     std::string Car_Up = ManagerEnvironmentConfiguration::getLMM() + "/models/CarTestRight.fbx";
@@ -1378,7 +1378,7 @@ void GLViewSpeedRacer::spawnPlayer2() {
     std::string carModelRight = ManagerEnvironmentConfiguration::getLMM() + "/models/DodgeCharger.fbx";
     std::string carModelLeft = ManagerEnvironmentConfiguration::getLMM() + "/models/CarDodgeDown.fbx";
     std::string carModelDown = ManagerEnvironmentConfiguration::getLMM() + "/models/CarDodgeNew.fbx";
-  
+
 
     // Initialize carMain
     carMain = Car::New(carModelUp, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
@@ -1454,7 +1454,7 @@ void GLViewSpeedRacer::spawnPlayer2Skin1() {
 }
 
 void GLViewSpeedRacer::spawnPlayer2Skin2() {
-  
+
     std::string carModelUp = ManagerEnvironmentConfiguration::getLMM() + "/models/CarTestRight.fbx";
     std::string carModelRight = ManagerEnvironmentConfiguration::getLMM() + "/models/CarTest.fbx";
     std::string carModelLeft = ManagerEnvironmentConfiguration::getLMM() + "/models/CarTestLeft.fbx";

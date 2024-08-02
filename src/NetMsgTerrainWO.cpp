@@ -40,7 +40,7 @@ void NetMsgSwitchTerrain::onMessageArrived() {
             << ", moveNegativeXAmount = " << moveNegativeXAmount << std::endl;
 
         // Apply terrain changes
-        glView->switchTerrain(useAnotherGrid);
+            glView->switchTerrain(useAnotherGrid);
         glView->moveTerrainDown(moveDownAmount);
         glView->rotateTerrain(rotateAmount);
         glView->moveTerrainNegativeX(moveNegativeXAmount);
