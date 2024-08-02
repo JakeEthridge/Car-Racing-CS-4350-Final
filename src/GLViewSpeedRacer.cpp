@@ -463,7 +463,7 @@ void Aftr::GLViewSpeedRacer::loadMap()
     soundList.push_back("anotherGridTerrainSound");
    // Car Objects 1 - 4
    
-   WO* car1 = WO::New(ford, Vector(1.0, 1.0, 1.0));
+   car1 = WO::New(ford, Vector(1.0, 1.0, 1.0));
    car1->setPosition(Vector(48, -40, -2));
    car1->isVisible = true;
    car1->rotateAboutGlobalZ(-4.60f);
@@ -474,7 +474,7 @@ void Aftr::GLViewSpeedRacer::loadMap()
 
     // Initialize SDL_image
     IMG_Init(IMG_INIT_PNG);
-   WO* car2 = WO::New(dodge, Vector(.1, .1, .1));
+   car2 = WO::New(dodge, Vector(.1, .1, .1));
    car2->setPosition(Vector(48, -40, -2));
    car2->isVisible = false;
    car2->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
