@@ -1746,7 +1746,7 @@ void GLViewSpeedRacer::sendTerrainChangeMessage(bool useAnotherGrid, float moveD
     msg.moveDownAmount = moveDownAmount;
     msg.rotateAmount = rotateAmount;
     msg.moveNegativeXAmount = moveNegativeXAmount;
-
+    //
     // Send network message
     client->sendNetMsgSynchronousTCP(msg);
 }
