@@ -216,6 +216,8 @@ bool GLViewSpeedRacer::isTimerRunning = false;
 Uint32 GLViewSpeedRacer::timerStartTime = 0;
 int GLViewSpeedRacer::resetTime = 10;
 Uint32 GLViewSpeedRacer::pausedTime = 0;
+
+
 void GLViewSpeedRacer::onKeyDown(const SDL_KeyboardEvent& key) {
     GLView::onKeyDown(key);
     Car* currentCar = nullptr;
@@ -233,7 +235,7 @@ void GLViewSpeedRacer::onKeyDown(const SDL_KeyboardEvent& key) {
 
     // Handle car visibility and position based on key presses
     if (key.keysym.sym == SDLK_DOWN) {
-        soundEngine->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Driving.wav").c_str(), true);
+        drivingSound->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Driving.wav").c_str(), true);
         car_test->isVisible = true;
         car_turn->isVisible = false;
         car_other_side->isVisible = false;
@@ -263,7 +265,7 @@ void GLViewSpeedRacer::onKeyDown(const SDL_KeyboardEvent& key) {
     }
 
     if (key.keysym.sym == SDLK_UP) {
-        soundEngine->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Driving.wav").c_str(), true);
+        drivingSound->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Driving.wav").c_str(), true);
         car_test->isVisible = false;
         car_turn->isVisible = false;
         car_other_side->isVisible = true;
@@ -292,7 +294,7 @@ void GLViewSpeedRacer::onKeyDown(const SDL_KeyboardEvent& key) {
     }
 
     if (key.keysym.sym == SDLK_LEFT) {
-        soundEngine->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Driving.wav").c_str(), true);
+        drivingSound->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Driving.wav").c_str(), true);
         car_test->isVisible = false;
         car_turn->isVisible = false;
         car_other_side->isVisible = false;
@@ -321,7 +323,7 @@ void GLViewSpeedRacer::onKeyDown(const SDL_KeyboardEvent& key) {
     }
 
     if (key.keysym.sym == SDLK_RIGHT) {
-        soundEngine->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Driving.wav").c_str(), true);
+        drivingSound->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Driving.wav").c_str(), true);
         car_test->isVisible = false;
         car_turn->isVisible = true;
         car_other_side->isVisible = false;
@@ -351,7 +353,7 @@ void GLViewSpeedRacer::onKeyDown(const SDL_KeyboardEvent& key) {
 
     // Handle car visibility and position based on key presses
     if (key.keysym.sym == SDLK_s) { // Down arrow key
-        soundEngine->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Driving.wav").c_str(), true);
+        drivingSound->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Driving.wav").c_str(), true);
         carMain->isVisible = true;
         carRight->isVisible = false;
         carLeft->isVisible = false;
@@ -380,7 +382,7 @@ void GLViewSpeedRacer::onKeyDown(const SDL_KeyboardEvent& key) {
     }
 
     if (key.keysym.sym == SDLK_w) { // Up arrow key
-        soundEngine->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Driving.wav").c_str(), true);
+        drivingSound->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Driving.wav").c_str(), true);
         carMain->isVisible = false;
         carRight->isVisible = false;
         carLeft->isVisible = true;
@@ -409,7 +411,7 @@ void GLViewSpeedRacer::onKeyDown(const SDL_KeyboardEvent& key) {
     }
 
     if (key.keysym.sym == SDLK_a) { // Left arrow key
-        soundEngine->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Driving.wav").c_str(), true);
+        drivingSound->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Driving.wav").c_str(), true);
         carMain->isVisible = false;
         carRight->isVisible = false;
         carLeft->isVisible = false;
@@ -438,7 +440,7 @@ void GLViewSpeedRacer::onKeyDown(const SDL_KeyboardEvent& key) {
     }
 
     if (key.keysym.sym == SDLK_d) { // Right arrow key
-        soundEngine->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Driving.wav").c_str(), true);
+        drivingSound->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Driving.wav").c_str(), true);
         carMain->isVisible = false;
         carRight->isVisible = true;
         carLeft->isVisible = false;
@@ -481,6 +483,14 @@ void GLViewSpeedRacer::onKeyDown(const SDL_KeyboardEvent& key) {
     {
         active_keys[SDLK_2] = true;
     }
+    if (key.keysym.sym == SDLK_5)
+    {
+        active_keys[SDLK_5] = true;
+    }
+    if (key.keysym.sym == SDLK_6)
+    {
+        active_keys[SDLK_6] = true;
+    }
     // Handle 0 key press to increment the lap number
     if (key.keysym.sym == SDLK_0) {
         lapNumber++;
@@ -495,28 +505,28 @@ void GLViewSpeedRacer::onKeyUp(const SDL_KeyboardEvent& key)
 {
     GLView::onKeyUp(key);
     if (key.keysym.sym == SDLK_DOWN) {
-        soundEngine->stopAllSounds();
+        drivingSound->stopAllSounds();
     }
     if (key.keysym.sym == SDLK_UP) {
-        soundEngine->stopAllSounds();
+        drivingSound->stopAllSounds();
     }
     if (key.keysym.sym == SDLK_LEFT) {
-        soundEngine->stopAllSounds();
+        drivingSound->stopAllSounds();
     }
     if (key.keysym.sym == SDLK_RIGHT) {
-        soundEngine->stopAllSounds();
+        drivingSound->stopAllSounds();
     }
     if (key.keysym.sym == SDLK_s) {
-        soundEngine->stopAllSounds();
+        drivingSound->stopAllSounds();
     }
     if (key.keysym.sym == SDLK_w) {
-        soundEngine->stopAllSounds();
+        drivingSound->stopAllSounds();
     }
     if (key.keysym.sym == SDLK_a) {
-        soundEngine->stopAllSounds();
+        drivingSound->stopAllSounds();
     }
     if (key.keysym.sym == SDLK_d) {
-        soundEngine->stopAllSounds();
+        drivingSound->stopAllSounds();
     }
 
     if (key.keysym.sym == SDLK_1)
@@ -534,6 +544,14 @@ void GLViewSpeedRacer::onKeyUp(const SDL_KeyboardEvent& key)
     if (key.keysym.sym == SDLK_2)
     {
         active_keys[SDLK_2] = false;
+    }
+    if (key.keysym.sym == SDLK_5)
+    {
+        active_keys[SDLK_5] = false;
+    }
+    if (key.keysym.sym == SDLK_6)
+    {
+        active_keys[SDLK_6] = false;
     }
 }
 
@@ -726,8 +744,8 @@ void Aftr::GLViewSpeedRacer::loadMap()
         if (ImGui::SliderFloat("Car Speed", &moveAmount, 0.1f, 10.0f)) {
         }
         ImGui::Separator();
-        if (ImGui::CollapsingHeader("Game Models")) {
-            if (ImGui::CollapsingHeader("Time Trials")) {
+        if (ImGui::CollapsingHeader("Game Modes")) {
+            ImGui::Text("Time Trials Mode");
                 // Button to start/pause the timer
                 if (ImGui::Button(isTimerRunning ? "Pause Timer" : "Start Timer")) {
                     if (isTimerRunning) {
@@ -762,7 +780,7 @@ void Aftr::GLViewSpeedRacer::loadMap()
                     float pausedElapsedTime = pausedTime / 1000.0f;
                     ImGui::Text("Timer: %.2f seconds", pausedElapsedTime);
                 }
-            }
+            
         }
         ImGui::Separator();
         // Main GUI code (this part is executed when gameState is MAIN_GUI)
@@ -837,16 +855,17 @@ void Aftr::GLViewSpeedRacer::loadMap()
         }
         ImGui::Separator();
         if (ImGui::CollapsingHeader("Player 1 Controls")) {
-            if (ImGui::Button("Select Player1")) {
-                this->spawnPlayer1();
 
-                // Send network message to spawn Player1 in another instance
-                if (client) {
-                    NetMsgSpawnCarPlayers msg;
-                    msg.carType = "Player1";
-                    client->sendNetMsgSynchronousTCP(msg);
-                }
-            }
+            //if (ImGui::Button("Select Player1")) {
+            //    this->spawnPlayer1();
+
+            //    // Send network message to spawn Player1 in another instance
+            //    if (client) {
+            //        NetMsgSpawnCarPlayers msg;
+            //        msg.carType = "Player1";
+            //        client->sendNetMsgSynchronousTCP(msg);
+            //    }
+            //}
 
             // Define the available car skins
             static const char* carSkins[] = { "Dodge", "Ford", "Sports Car", "CyberTrunk" };
@@ -854,17 +873,21 @@ void Aftr::GLViewSpeedRacer::loadMap()
 
             ImGui::Combo("Select Car Skin", &selectedSkin, carSkins, IM_ARRAYSIZE(carSkins));
 
-            if (ImGui::Button("Apply Skin")) {
+            if (ImGui::Button("Switch Player 1 Car")) {
                 if (selectedSkin == 0) {
+                    hideAllCars();
                     this->spawnPlayer1(); // Switch to Dodge skin locally
                 }
                 else if (selectedSkin == 1) {
+                    hideAllCars();
                     this->OtherCarSkin1(); // Switch to Ford skin locally
                 }
                 else if (selectedSkin == 2) {
+                    hideAllCars();
                     this->OtherCarSkin2(); // Switch to Sports Car skin locally
                 }
                 else if (selectedSkin == 3) {
+                    hideAllCars();
                     this->OtherCarSkin3(); // Switch to CyberTrunk skin locally
                 }
 
@@ -881,63 +904,85 @@ void Aftr::GLViewSpeedRacer::loadMap()
                     client->sendNetMsgSynchronousTCP(msg);
                 }
             }
+            Uint32 currentTime = SDL_GetTicks();
 
-            // Boost Speed for Player 1
-            if (ImGui::Button("Boost Speed Player 1") && canPressPlayer1SpeedButton) {
-                player1SpeedBoostAmount = ((rand() % 3) + 3); // Randomly select speed boost between 3 and 5
-                moveAmount += player1SpeedBoostAmount;
-                isPlayer1SpeedBoostActive = true;
-                player1SpeedBoostStartTime = SDL_GetTicks();
-                lastPlayer1SpeedBoostTime = SDL_GetTicks();
-                canPressPlayer1SpeedButton = false; // Reset the button press availability
+            // Check for Player 2 speed boost key press
+            const Uint8* state = SDL_GetKeyboardState(nullptr);
+            if (state[SDL_SCANCODE_RCTRL]) {
+                if (canPressPlayer1SpeedButton) {
+                    player1SpeedBoostAmount = ((rand() % 3) + 3); // Randomly select speed boost between 3 and 5
+                    moveAmount += player1SpeedBoostAmount;
+                    isPlayer1SpeedBoostActive = true;
+                    player1SpeedBoostStartTime = SDL_GetTicks();
+                    lastPlayer1SpeedBoostTime = SDL_GetTicks();
+                    canPressPlayer1SpeedButton = false; // Reset the button press availability
+                }
             }
 
+            // Timer for Player 2 Speed Boost
+            if (isPlayer1SpeedBoostActive) {
+                float boostDuration = 5.0f; // Duration of the speed boost in seconds
+                float elapsedTime = (currentTime - player1SpeedBoostStartTime) / 1000.0f;
+                float remainingTime = boostDuration - elapsedTime;
+
+                if (remainingTime <= 0.0f) {
+                    moveAmount = 8.0f; // Reset the speed to default
+                    isPlayer1SpeedBoostActive = false;
+                    player1SpeedBoostAmount = 0;
+                }
+
+                // Display the countdown
+                ImGui::Text("Speed Boost Countdown: %.1f seconds", remainingTime);
+            }
+            else {
+                // Display default countdown message when boost is not active
+                ImGui::Text("Speed Boost Countdown: N/A");
+            }
+
+            // Cooldown for Player 1 Speed Boost
+            if (currentTime - lastPlayer1SpeedBoostTime >= 6000) { // 6 seconds cooldown
+                canPressPlayer1SpeedButton = true;
+            }
+
+            // Display the updated speed
             ImGui::Text("Updated Speed: %.2f", moveAmount);
         }
 
-        // Timer for Player 1 Speed Boost
-        if (isPlayer1SpeedBoostActive) {
-            if ((currentTime - player1SpeedBoostStartTime) / 1000.0f >= 10.0f) {
-                moveAmount -= player1SpeedBoostAmount; // Reset the speed after 10 seconds
-                isPlayer1SpeedBoostActive = false;
-                player1SpeedBoostAmount = 0;
-            }
-        }
-
-        if (currentTime - lastPlayer1SpeedBoostTime >= 6000) { // 6 seconds cooldown
-            canPressPlayer1SpeedButton = true;
-        }
 
         ImGui::Separator();
         if (ImGui::CollapsingHeader("Player 2 Controls")) {
-            if (ImGui::Button("Select Player2")) {
-                this->spawnPlayer2();
+            //if (ImGui::Button("Select Player2")) {
+            //    this->spawnPlayer2();
 
-                // Send network message to spawn Player2 in another instance
-                if (client) {
-                    NetMsgSpawnCarPlayers msg;
-                    msg.carType = "Player2";
-                    client->sendNetMsgSynchronousTCP(msg);
-                }
-            }
+            //    // Send network message to spawn Player2 in another instance
+            //    if (client) {
+            //        NetMsgSpawnCarPlayers msg;
+            //        msg.carType = "Player2";
+            //        client->sendNetMsgSynchronousTCP(msg);
+            //    }
+            //}
 
             // Define the available car skins for Player 2
             static const char* carSkinsPlayer2[] = { "Dodge", "Ford", "Sports Car", "CyberTrunk" };
             static int selectedSkinPlayer2 = 0;
 
-            ImGui::Combo("Select Car Skin", &selectedSkinPlayer2, carSkinsPlayer2, IM_ARRAYSIZE(carSkinsPlayer2));
+            ImGui::Combo("Select Player 2 Car", &selectedSkinPlayer2, carSkinsPlayer2, IM_ARRAYSIZE(carSkinsPlayer2));
 
-            if (ImGui::Button("Apply Skin")) {
+            if (ImGui::Button("Switch Player 2 Car")) {
                 if (selectedSkinPlayer2 == 0) {
+                    hideAllCars2();
                     this->spawnPlayer2(); // Switch to Dodge skin locally
                 }
                 else if (selectedSkinPlayer2 == 1) {
+                    hideAllCars2(); 
                     this->spawnPlayer2Skin1(); // Switch to Ford skin locally
                 }
                 else if (selectedSkinPlayer2 == 2) {
+                    hideAllCars2(); 
                     this->spawnPlayer2Skin2(); // Switch to Sports Car skin locally
                 }
                 else if (selectedSkinPlayer2 == 3) {
+                    hideAllCars2(); 
                     this->spawnPlayer2Skin3(); // Switch to CyberTrunk skin locally
                 }
 
@@ -955,70 +1000,114 @@ void Aftr::GLViewSpeedRacer::loadMap()
                 }
             }
 
-            // Add similar control buttons and logic for Player 2
-            if (ImGui::Button("Boost Speed Player 2") && canPressPlayer2SpeedButton) {
-                player2SpeedBoostAmount = ((rand() % 3) + 3); // Randomly select speed boost between 3 and 5
-                moveAmount += player2SpeedBoostAmount;
-                isPlayer2SpeedBoostActive = true;
-                player2SpeedBoostStartTime = SDL_GetTicks();
-                lastPlayer2SpeedBoostTime = SDL_GetTicks();
-                canPressPlayer2SpeedButton = false; // Reset the button press availability
+            Uint32 currentTime = SDL_GetTicks();
+
+            // Check for Player 2 speed boost key press
+            const Uint8* state = SDL_GetKeyboardState(nullptr);
+            if (state[SDL_SCANCODE_TAB]) {
+                if (canPressPlayer2SpeedButton) {
+                    player2SpeedBoostAmount = ((rand() % 3) + 3); // Randomly select speed boost between 3 and 5
+                    moveAmount += player2SpeedBoostAmount;
+                    isPlayer2SpeedBoostActive = true;
+                    player2SpeedBoostStartTime = currentTime;
+                    lastPlayer2SpeedBoostTime = currentTime;
+                    canPressPlayer2SpeedButton = false; // Reset the button press availability
+                }
             }
 
+            // Timer for Player 2 Speed Boost
+            if (isPlayer2SpeedBoostActive) {
+                float boostDuration = 5.0f; // Duration of the speed boost in seconds
+                float elapsedTime = (currentTime - player2SpeedBoostStartTime) / 1000.0f;
+                float remainingTime = boostDuration - elapsedTime;
+
+                if (remainingTime <= 0.0f) {
+                    moveAmount = 8.0f; // Reset the speed to default
+                    isPlayer2SpeedBoostActive = false;
+                    player2SpeedBoostAmount = 0;
+                }
+
+                // Display the countdown
+                ImGui::Text("Speed Boost Countdown: %.1f seconds", remainingTime);
+            }
+            else {
+                // Display default countdown message when boost is not active
+                ImGui::Text("Speed Boost Countdown: N/A");
+            }
+
+            // Cooldown for Player 2 Speed Boost
+            if (currentTime - lastPlayer2SpeedBoostTime >= 6000) { // 6 seconds cooldown
+                canPressPlayer2SpeedButton = true;
+            }
+
+            // Display the updated speed
             ImGui::Text("Updated Speed: %.2f", moveAmount);
         }
-
-        // Timer for Player 2 Speed Boost
-        if (isPlayer2SpeedBoostActive) {
-            if ((currentTime - player2SpeedBoostStartTime) / 1000.0f >= 10.0f) {
-                moveAmount -= player2SpeedBoostAmount; // Reset the speed after 10 seconds
-                isPlayer2SpeedBoostActive = false;
-                player2SpeedBoostAmount = 0;
-            }
-        }
-
-        if (currentTime - lastPlayer2SpeedBoostTime >= 6000) { // 6 seconds cooldown
-            canPressPlayer2SpeedButton = true;
-        }
         ImGui::Separator();
+        if (ImGui::CollapsingHeader("Audio")) {
 
-        // Dropdown menu for selecting music
-        static int selectedMusicIndex = 0;
-        static const char* musicOptions[] = { "SoundTrack1", "SoundTrack2", "SoundTrack3", "SoundTrack4" };
-        if (ImGui::BeginCombo("Select Music", musicOptions[selectedMusicIndex])) {
-            for (int i = 0; i < IM_ARRAYSIZE(musicOptions); i++) {
-                bool isSelected = (selectedMusicIndex == i);
-                if (ImGui::Selectable(musicOptions[i], isSelected)) {
-                    selectedMusicIndex = i;
+            // Dropdown menu for selecting music
+            static int selectedMusicIndex = 0;
+            static const char* musicOptions[] = { "SoundTrack1", "SoundTrack2", "SoundTrack3", "SoundTrack4" };
+            if (ImGui::BeginCombo("Select Music", musicOptions[selectedMusicIndex])) {
+                for (int i = 0; i < IM_ARRAYSIZE(musicOptions); i++) {
+                    bool isSelected = (selectedMusicIndex == i);
+                    if (ImGui::Selectable(musicOptions[i], isSelected)) {
+                        selectedMusicIndex = i;
 
-                    // Handle music change
+                        // Handle music change considering mute state
+                        soundEngine->stopAllSounds();
+                        if (!GLViewSpeedRacer::isMuted) {
+                            switch (selectedMusicIndex) {
+                            case 0:
+                                soundEngine->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Track1.wav").c_str(), true);
+                                break;
+                            case 1:
+                                soundEngine->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Track2.wav").c_str(), true);
+                                break;
+                            case 2:
+                                soundEngine->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Track3.wav").c_str(), true);
+                                break;
+                            case 3:
+                                soundEngine->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Track4.wav").c_str(), true);
+                                break;
+                            }
+                        }
+                    }
+                    if (isSelected) {
+                        ImGui::SetItemDefaultFocus();
+                    }
+                }
+                ImGui::EndCombo();
+            }
+
+            // Volume slider
+            if (ImGui::SliderFloat("Volume", &backgroundVolume, 0.0f, 1.0f)) {
+                soundEngine->setSoundVolume(backgroundVolume);
+            }
+
+            // Mute button
+            if (ImGui::Button(GLViewSpeedRacer::isMuted ? "Unmute" : "Mute")) {
+                GLViewSpeedRacer::isMuted = !GLViewSpeedRacer::isMuted;
+                soundEngine->stopAllSounds();
+                if (!GLViewSpeedRacer::isMuted) {
+                    // Play the currently selected track again
                     switch (selectedMusicIndex) {
                     case 0:
-                        soundEngine->stopAllSounds();
                         soundEngine->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Track1.wav").c_str(), true);
                         break;
                     case 1:
-                        soundEngine->stopAllSounds();
                         soundEngine->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Track2.wav").c_str(), true);
                         break;
                     case 2:
-                        soundEngine->stopAllSounds();
                         soundEngine->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Track3.wav").c_str(), true);
                         break;
                     case 3:
-                        soundEngine->stopAllSounds();
                         soundEngine->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Track4.wav").c_str(), true);
                         break;
                     }
                 }
-                if (isSelected) {
-                    ImGui::SetItemDefaultFocus();
-                }
             }
-            ImGui::EndCombo();
-        }
-        if (ImGui::SliderFloat("Volume", &backgroundVolume, 0.0f, 1.0f)) {
-            soundEngine->setSoundVolume(backgroundVolume);
         }
         ImGui::Separator();
         // Button to switch camera view
@@ -1226,7 +1315,7 @@ void GLViewSpeedRacer::spawnPlayer1() {
     std::string Car_Down = ManagerEnvironmentConfiguration::getLMM() + "/models/CarDodgeNew.fbx"; // New car model path
 
     car_test = Car::New(Car_Up, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    car_test->setPos(Vector(0, 0, 0));
+    car_test->setPos(Vector(0, 0, 5));
     car_test->setPose(spy_pose);
     car_test->rotateAboutGlobalZ(-4.60f);
     car_test->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
@@ -1234,7 +1323,7 @@ void GLViewSpeedRacer::spawnPlayer1() {
     worldLst->push_back(car_test);
 
     car_turn = Car::New(Car_Right, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    car_turn->setPos(Vector(0, 0, 0));
+    car_turn->setPos(Vector(0, 0, 5));
     car_turn->setPose(spy_pose);
     car_turn->rotateAboutGlobalZ(-4.60f);
     car_turn->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
@@ -1242,7 +1331,7 @@ void GLViewSpeedRacer::spawnPlayer1() {
     worldLst->push_back(car_turn);
 
     car_other_side = Car::New(Car_Left, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    car_other_side->setPos(Vector(0, 0, 0)); // Adjust the position to be on the other side of car_test
+    car_other_side->setPos(Vector(0, 0, 5)); // Adjust the position to be on the other side of car_test
     car_other_side->setPose(spy_pose);
     car_other_side->rotateAboutGlobalZ(-4.60f);
     car_other_side->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
@@ -1250,10 +1339,11 @@ void GLViewSpeedRacer::spawnPlayer1() {
     worldLst->push_back(car_other_side);
 
     car_new = Car::New(Car_Down, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    car_new->setPos(Vector(0, 0, 0)); // Adjust the position as needed
+    car_new->setPos(Vector(0, 0, 5)); // Adjust the position as needed
     car_new->setPose(spy_pose);
     car_new->rotateAboutGlobalZ(-4.60f);
     car_new->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+    car_new->isVisible = true;
     worldLst->push_back(car_new);
 
 
@@ -1265,7 +1355,7 @@ void GLViewSpeedRacer::OtherCarSkin1() {
     std::string Car_Down = ManagerEnvironmentConfiguration::getLMM() + "/models/ford/CarDirectionDown.dae";
 
     car_test = Car::New(Car_Up, Vector(20, 20, 20), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    car_test->setPos(Vector(0, 0, 0));
+    car_test->setPos(Vector(0, 0, 5));
     car_test->setPose(spy_pose);
     car_test->rotateAboutGlobalZ(-4.60f);
     car_test->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
@@ -1273,7 +1363,7 @@ void GLViewSpeedRacer::OtherCarSkin1() {
     worldLst->push_back(car_test);
 
     car_turn = Car::New(Car_Right, Vector(20, 20, 20), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    car_turn->setPos(Vector(0, 0, 0));
+    car_turn->setPos(Vector(0, 0, 5));
     car_turn->setPose(spy_pose);
     car_turn->rotateAboutGlobalZ(-4.60f);
     car_turn->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
@@ -1281,7 +1371,7 @@ void GLViewSpeedRacer::OtherCarSkin1() {
     worldLst->push_back(car_turn);
 
     car_other_side = Car::New(Car_Left, Vector(20, 20, 20), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    car_other_side->setPos(Vector(0, 0, 0)); // Adjust the position to be on the other side of car_test
+    car_other_side->setPos(Vector(0, 0, 5)); // Adjust the position to be on the other side of car_test
     car_other_side->setPose(spy_pose);
     car_other_side->rotateAboutGlobalZ(-4.60f);
     car_other_side->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
@@ -1289,10 +1379,11 @@ void GLViewSpeedRacer::OtherCarSkin1() {
     worldLst->push_back(car_other_side);
 
     car_new = Car::New(Car_Down, Vector(20, 20, 20), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    car_new->setPos(Vector(0, 0, 0)); // Adjust the position as needed
+    car_new->setPos(Vector(0, 0, 5)); // Adjust the position as needed
     car_new->setPose(spy_pose);
     car_new->rotateAboutGlobalZ(-4.60f);
     car_new->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+    car_new->isVisible = true;
     worldLst->push_back(car_new);
 
 }
@@ -1303,7 +1394,7 @@ void GLViewSpeedRacer::OtherCarSkin2() {
     std::string Car_Down = ManagerEnvironmentConfiguration::getLMM() + "/models/CarTestOtherWay.fbx";
 
     car_test = Car::New(Car_Up, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    car_test->setPos(Vector(0, 0, 0));
+    car_test->setPos(Vector(0, 0, 5));
     car_test->setPose(spy_pose);
     car_test->rotateAboutGlobalZ(-4.60f);
     car_test->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
@@ -1311,7 +1402,7 @@ void GLViewSpeedRacer::OtherCarSkin2() {
     worldLst->push_back(car_test);
 
     car_turn = Car::New(Car_Right, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    car_turn->setPos(Vector(0, 0, 0));
+    car_turn->setPos(Vector(0, 0, 5));
     car_turn->setPose(spy_pose);
     car_turn->rotateAboutGlobalZ(-4.60f);
     car_turn->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
@@ -1319,7 +1410,7 @@ void GLViewSpeedRacer::OtherCarSkin2() {
     worldLst->push_back(car_turn);
 
     car_other_side = Car::New(Car_Left, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    car_other_side->setPos(Vector(0, 0, 0)); // Adjust the position to be on the other side of car_test
+    car_other_side->setPos(Vector(0, 0, 5)); // Adjust the position to be on the other side of car_test
     car_other_side->setPose(spy_pose);
     car_other_side->rotateAboutGlobalZ(-4.60f);
     car_other_side->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
@@ -1327,10 +1418,11 @@ void GLViewSpeedRacer::OtherCarSkin2() {
     worldLst->push_back(car_other_side);
 
     car_new = Car::New(Car_Down, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    car_new->setPos(Vector(0, 0, 0)); // Adjust the position as needed
+    car_new->setPos(Vector(0, 0, 5)); // Adjust the position as needed
     car_new->setPose(spy_pose);
     car_new->rotateAboutGlobalZ(-4.60f);
     car_new->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+    car_new->isVisible = true;
     worldLst->push_back(car_new);
 
 }
@@ -1341,7 +1433,7 @@ void GLViewSpeedRacer::OtherCarSkin3() {
     std::string Car_Down = ManagerEnvironmentConfiguration::getLMM() + "/models/CyberTrunkRight.fbx";
 
     car_test = Car::New(Car_Up, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    car_test->setPos(Vector(0, 0, 0));
+    car_test->setPos(Vector(0, 0, 5));
     car_test->setPose(spy_pose);
     car_test->rotateAboutGlobalZ(-4.60f);
     car_test->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
@@ -1349,7 +1441,7 @@ void GLViewSpeedRacer::OtherCarSkin3() {
     worldLst->push_back(car_test);
 
     car_turn = Car::New(Car_Right, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    car_turn->setPos(Vector(0, 0, 0));
+    car_turn->setPos(Vector(0, 0, 5));
     car_turn->setPose(spy_pose);
     car_turn->rotateAboutGlobalZ(-4.60f);
     car_turn->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
@@ -1357,7 +1449,7 @@ void GLViewSpeedRacer::OtherCarSkin3() {
     worldLst->push_back(car_turn);
 
     car_other_side = Car::New(Car_Left, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    car_other_side->setPos(Vector(0, 0, 0)); // Adjust the position to be on the other side of car_test
+    car_other_side->setPos(Vector(0, 0, 5)); // Adjust the position to be on the other side of car_test
     car_other_side->setPose(spy_pose);
     car_other_side->rotateAboutGlobalZ(-4.60f);
     car_other_side->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
@@ -1365,10 +1457,11 @@ void GLViewSpeedRacer::OtherCarSkin3() {
     worldLst->push_back(car_other_side);
 
     car_new = Car::New(Car_Down, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    car_new->setPos(Vector(0, 0, 0)); // Adjust the position as needed
+    car_new->setPos(Vector(0, 0, 5)); // Adjust the position as needed
     car_new->setPose(spy_pose);
     car_new->rotateAboutGlobalZ(-4.60f);
     car_new->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+    car_new->isVisible = true;
     worldLst->push_back(car_new);
 
 }
@@ -1382,34 +1475,38 @@ void GLViewSpeedRacer::spawnPlayer2() {
 
     // Initialize carMain
     carMain = Car::New(carModelUp, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    carMain->setPos(Vector(0, 0, 0));
+    carMain->setPos(Vector(0, 0, 5));
     carMain->setPose(spy_pose);
     carMain->rotateAboutGlobalZ(-4.60f);
     carMain->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+    carMain->isVisible = false;
     worldLst->push_back(carMain);
 
     // Initialize carRight
     carRight = Car::New(carModelRight, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    carRight->setPos(Vector(0, 0, 0));
+    carRight->setPos(Vector(0, 0, 5));
     carRight->setPose(spy_pose);
     carRight->rotateAboutGlobalZ(-4.60f);
     carRight->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+    carRight->isVisible = false;
     worldLst->push_back(carRight);
 
     // Initialize carLeft
     carLeft = Car::New(carModelLeft, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    carLeft->setPos(Vector(0, 0, 0)); // Adjust the position to be on the other side of carMain
+    carLeft->setPos(Vector(0, 0, 5)); // Adjust the position to be on the other side of carMain
     carLeft->setPose(spy_pose);
     carLeft->rotateAboutGlobalZ(-4.60f);
     carLeft->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+    carLeft->isVisible = false;
     worldLst->push_back(carLeft);
 
     // Initialize carDown
     carDown = Car::New(carModelDown, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    carDown->setPos(Vector(0, 0, 0)); // Adjust the position as needed
+    carDown->setPos(Vector(0, 0, 5)); // Adjust the position as needed
     carDown->setPose(spy_pose);
     carDown->rotateAboutGlobalZ(-4.60f);
     carDown->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+    carDown->isVisible = true;
     worldLst->push_back(carDown);
 }
 
@@ -1422,34 +1519,38 @@ void GLViewSpeedRacer::spawnPlayer2Skin1() {
 
     // Initialize carMain
     carMain = Car::New(carModelUp, Vector(20, 20, 20), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    carMain->setPos(Vector(0, 0, 0));
+    carMain->setPos(Vector(0, 0, 5));
     carMain->setPose(spy_pose);
     carMain->rotateAboutGlobalZ(-4.60f);
     carMain->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+    carMain->isVisible = false;
     worldLst->push_back(carMain);
 
     // Initialize carRight
     carRight = Car::New(carModelRight, Vector(20, 20, 20), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    carRight->setPos(Vector(0, 0, 0));
+    carRight->setPos(Vector(0, 0, 5));
     carRight->setPose(spy_pose);
     carRight->rotateAboutGlobalZ(-4.60f);
     carRight->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+    carRight->isVisible = false;
     worldLst->push_back(carRight);
 
     // Initialize carLeft
     carLeft = Car::New(carModelLeft, Vector(20, 20, 20), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    carLeft->setPos(Vector(0, 0, 0)); // Adjust the position to be on the other side of carMain
+    carLeft->setPos(Vector(0, 0, 5)); // Adjust the position to be on the other side of carMain
     carLeft->setPose(spy_pose);
     carLeft->rotateAboutGlobalZ(-4.60f);
     carLeft->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+    carLeft->isVisible = false;
     worldLst->push_back(carLeft);
 
     // Initialize carDown
     carDown = Car::New(carModelDown, Vector(20, 20, 20), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    carDown->setPos(Vector(0, 0, 0)); // Adjust the position as needed
+    carDown->setPos(Vector(0, 0, 5)); // Adjust the position as needed
     carDown->setPose(spy_pose);
     carDown->rotateAboutGlobalZ(-4.60f);
     carDown->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+    carDown->isVisible = true;
     worldLst->push_back(carDown);
 }
 
@@ -1462,34 +1563,38 @@ void GLViewSpeedRacer::spawnPlayer2Skin2() {
 
     // Initialize carMain
     carMain = Car::New(carModelUp, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    carMain->setPos(Vector(0, 0, 0));
+    carMain->setPos(Vector(0, 0, 5));
     carMain->setPose(spy_pose);
     carMain->rotateAboutGlobalZ(-4.60f);
     carMain->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+    carMain->isVisible = false;
     worldLst->push_back(carMain);
 
     // Initialize carRight
     carRight = Car::New(carModelRight, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    carRight->setPos(Vector(0, 0, 0));
+    carRight->setPos(Vector(0, 0, 5));
     carRight->setPose(spy_pose);
     carRight->rotateAboutGlobalZ(-4.60f);
     carRight->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+    carRight->isVisible=false;
     worldLst->push_back(carRight);
 
     // Initialize carLeft
     carLeft = Car::New(carModelLeft, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    carLeft->setPos(Vector(0, 0, 0)); // Adjust the position to be on the other side of carMain
+    carLeft->setPos(Vector(0, 0, 5)); // Adjust the position to be on the other side of carMain
     carLeft->setPose(spy_pose);
     carLeft->rotateAboutGlobalZ(-4.60f);
     carLeft->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+    carLeft->isVisible=false;
     worldLst->push_back(carLeft);
 
     // Initialize carDown
     carDown = Car::New(carModelDown, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    carDown->setPos(Vector(0, 0, 0)); // Adjust the position as needed
+    carDown->setPos(Vector(0, 0, 5)); // Adjust the position as needed
     carDown->setPose(spy_pose);
     carDown->rotateAboutGlobalZ(-4.60f);
     carDown->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+    carDown->isVisible = true;
     worldLst->push_back(carDown);
 }
 
@@ -1502,34 +1607,38 @@ void GLViewSpeedRacer::spawnPlayer2Skin3() {
 
     // Initialize carMain
     carMain = Car::New(carModelUp, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    carMain->setPos(Vector(0, 0, 0));
+    carMain->setPos(Vector(0, 0, 5));
     carMain->setPose(spy_pose);
     carMain->rotateAboutGlobalZ(-4.60f);
     carMain->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+    carMain->isVisible = false;
     worldLst->push_back(carMain);
 
     // Initialize carRight
     carRight = Car::New(carModelRight, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    carRight->setPos(Vector(0, 0, 0));
+    carRight->setPos(Vector(0, 0, 5));
     carRight->setPose(spy_pose);
     carRight->rotateAboutGlobalZ(-4.60f);
     carRight->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+    carRight->isVisible = false;
     worldLst->push_back(carRight);
 
     // Initialize carLeft
     carLeft = Car::New(carModelLeft, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    carLeft->setPos(Vector(0, 0, 0)); // Adjust the position to be on the other side of carMain
+    carLeft->setPos(Vector(0, 0, 5)); // Adjust the position to be on the other side of carMain
     carLeft->setPose(spy_pose);
     carLeft->rotateAboutGlobalZ(-4.60f);
     carLeft->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+    carLeft->isVisible = false;
     worldLst->push_back(carLeft);
 
     // Initialize carDown
     carDown = Car::New(carModelDown, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
-    carDown->setPos(Vector(0, 0, 0)); // Adjust the position as needed
+    carDown->setPos(Vector(0, 0, 5)); // Adjust the position as needed
     carDown->setPose(spy_pose);
     carDown->rotateAboutGlobalZ(-4.60f);
     carDown->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+    carDown->isVisible = true;
     worldLst->push_back(carDown);
 }
 
@@ -1614,6 +1723,20 @@ void GLViewSpeedRacer::updateControls()
     {
         this->getCamera()->moveRelative(Vector(-1, 0, 0) * this->getCamera()->getCameraVelocity() * 75);
     }
+    // New key press to move the camera along -X direction and look down the -Z axis
+    if (active_keys[SDLK_5])
+    {
+        // Move the camera in the -X direction
+        this->getCamera()->moveRelative(Vector(-1, 0, 0) * this->getCamera()->getCameraVelocity() * 100);
+
+        // Rotate the camera to look down the -Z axis
+        this->getCamera()->setCameraLookAtPoint(this->getCamera()->getPosition() + Vector(0, 0, -1));
+    }
+    if (active_keys[SDLK_6])
+    {
+        this->getCamera()->moveRelative(Vector(0, 0, 1) * this->getCamera()->getCameraVelocity() * 275); // Increased speed by a factor of 5
+    }
+
 }
 
 
@@ -1683,4 +1806,16 @@ void GLViewSpeedRacer::handleCarMovement(int carModel, int keyPress, float moveA
         }
         break;
     }
+}
+void GLViewSpeedRacer::hideAllCars() {
+    if (car_test) car_test->isVisible = false;
+    if (car_turn) car_turn->isVisible = false;
+    if (car_other_side) car_other_side->isVisible = false;
+    if (car_new) car_new->isVisible = false;
+}
+void GLViewSpeedRacer::hideAllCars2() {
+    if (carMain) carMain->isVisible = false;
+    if (carRight) carRight->isVisible = false;
+    if (carLeft) carLeft->isVisible = false;
+    if (carDown) carDown->isVisible = false;
 }
