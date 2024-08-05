@@ -30,6 +30,7 @@ namespace Aftr {
         float moveDownAmount;
         float rotateAmount;
         float moveNegativeXAmount;
+        float moveTerrainPosZAmount;
     };
 
 };
