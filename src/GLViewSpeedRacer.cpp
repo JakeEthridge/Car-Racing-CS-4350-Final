@@ -1764,7 +1764,7 @@ void GLViewSpeedRacer::handleCarMovement(int carModel, int keyPress, float moveA
     }
 
     if (!currentCar) return;
-
+    //
     // Handle car visibility and position based on key presses
     switch (keyPress) {
     case SDLK_DOWN:
