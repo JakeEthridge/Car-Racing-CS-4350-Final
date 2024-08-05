@@ -102,4 +102,4 @@ TARGET_INCLUDE_DIRECTORIES( ${PROJECT_NAME} PRIVATE
 SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${warnings} ${cppFlags}" )  #These two lines should be removed sln 3 aug 2022
 SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${warnings}" )                  #These two lines should be removed sln 3 aug 2022
 MESSAGE( STATUS "CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}" )
-MESSAGE( STATUS "CMAKE_C_FLAGS  : ${CMAKE_C_FLAGS}" )                          
+MESSAGE( STATUS "CMAKE_C_FLAGS  : ${CMAKE_C_FLAGS}" )                  
