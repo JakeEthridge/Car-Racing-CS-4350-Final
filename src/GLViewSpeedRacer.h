@@ -66,7 +66,8 @@ namespace Aftr
         void spawnPlayer2Skin1();
         void spawnPlayer2Skin2();
         void spawnPlayer2Skin3();
-
+        void hideAllCars();
+        void hideAllCars2();
         Car* getVisibleCar1() {
             if (car_test->isVisible) return car_test;
             if (car_turn->isVisible) return car_turn;
@@ -83,7 +84,8 @@ namespace Aftr
             return nullptr;
         }
         bool followCar1; // Add this member variable to track the current car group
-
+        // Initialize the static member
+        bool isMuted = false;
         // Cars1
         Car* car_test;
         Car* car_turn;
@@ -95,7 +97,6 @@ namespace Aftr
         Car* carRight;
         Car* carLeft;
         Car* carDown;
-
 
         // Simple linear interpolation function
         float lerp(float a, float b, float t) {
@@ -128,6 +129,7 @@ namespace Aftr
 
 
         irrklang::ISoundEngine* soundEngine = irrklang::createIrrKlangDevice();
+        irrklang::ISoundEngine* drivingSound = irrklang::createIrrKlangDevice();
         std::unordered_map<WO*, irrklang::ISoundSource*> defaultSounds;
         std::vector<std::string> soundList;
         std::map<SDL_KeyCode, bool> active_keys;
@@ -155,13 +157,12 @@ namespace Aftr
         float terrainHeight;
         bool isTopViewActive = false;
         bool isFreeLookActive = false;
-        irrklang::ISound* drivingSound;      // Driving sound
         bool isDrivingSoundPlaying;          // Flag to check if sound is playing
         enum CarType {
             DODGE,
             FORD
         };
-
+        bool showGrids;
         CarType currentCarType = DODGE; // Default to Dodge
         bool usePlayer1 = true; // Start with spawnPlayer1
         float moveAmount = 8.0f; // Default speed for both players
@@ -180,6 +181,7 @@ namespace Aftr
         static int leftKeyPressCount;
         static Uint32 secondLeftKeyPressTime;
         static bool updateLapPending;
+        int currentSkinPlayer2 = -1; // Initialize with an invalid value to indicate no skin is currently active
 
         // Timer variables
         static bool isTimerRunning;
