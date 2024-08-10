@@ -469,27 +469,27 @@ void GLViewSpeedRacer::onKeyDown(const SDL_KeyboardEvent& key) {
     }
     if (key.keysym.sym == SDLK_1)
     {
-        active_keys[SDLK_1] = true;
+        active_keys[SDLK_1] = !active_keys[SDLK_1];
     }
     if (key.keysym.sym == SDLK_4)
     {
-        active_keys[SDLK_4] = true;
+        active_keys[SDLK_4] = !active_keys[SDLK_4];
     }
     if (key.keysym.sym == SDLK_3)
     {
-        active_keys[SDLK_3] = true;
+        active_keys[SDLK_3] = !active_keys[SDLK_3];
     }
     if (key.keysym.sym == SDLK_2)
     {
-        active_keys[SDLK_2] = true;
+        active_keys[SDLK_2] = !active_keys[SDLK_2];
     }
     if (key.keysym.sym == SDLK_5)
     {
-        active_keys[SDLK_5] = true;
+        active_keys[SDLK_5] = !active_keys[SDLK_5];
     }
     if (key.keysym.sym == SDLK_6)
     {
-        active_keys[SDLK_6] = true;
+        active_keys[SDLK_6] = !active_keys[SDLK_6];
     }
     // Handle 0 key press to increment the lap number
     if (key.keysym.sym == SDLK_0) {
@@ -529,30 +529,7 @@ void GLViewSpeedRacer::onKeyUp(const SDL_KeyboardEvent& key)
         drivingSound->stopAllSounds();
     }
 
-    if (key.keysym.sym == SDLK_1)
-    {
-        active_keys[SDLK_1] = false;
-    }
-    if (key.keysym.sym == SDLK_4)
-    {
-        active_keys[SDLK_4] = false;
-    }
-    if (key.keysym.sym == SDLK_3)
-    {
-        active_keys[SDLK_3] = false;
-    }
-    if (key.keysym.sym == SDLK_2)
-    {
-        active_keys[SDLK_2] = false;
-    }
-    if (key.keysym.sym == SDLK_5)
-    {
-        active_keys[SDLK_5] = false;
-    }
-    if (key.keysym.sym == SDLK_6)
-    {
-        active_keys[SDLK_6] = false;
-    }
+
 }
 
 
@@ -638,7 +615,7 @@ void Aftr::GLViewSpeedRacer::loadMap()
     IMG_Init(IMG_INIT_PNG);
 
     // Load images using ManagerEnvironmentConfiguration::getLMM() path
-    std::string basePath = ManagerEnvironmentConfiguration::getLMM() + "/models/ford/";
+    std::string basePath = ManagerEnvironmentConfiguration::getLMM() + "/images/";
     std::string startImagePath = basePath + "start_image.png";
     std::string loadingImagePath = basePath + "loading_image.png";
 
@@ -1693,12 +1670,23 @@ void GLViewSpeedRacer::resetCarPosition() {
     car_other_side->setPos(Aftr::Vector(initialCarPosition.x - 12, initialCarPosition.y, initialCarPosition.z));
     car_new->setPos(Aftr::Vector(initialCarPosition.x, initialCarPosition.y + 12, initialCarPosition.z));
 
+    // Set the new car positions
+    carMain->setPos(Aftr::Vector(initialCarPosition.x, initialCarPosition.y, initialCarPosition.z + 5));
+    carRight->setPos(Aftr::Vector(initialCarPosition.x + 5, initialCarPosition.y, initialCarPosition.z + 5));
+    carLeft->setPos(Aftr::Vector(initialCarPosition.x - 5, initialCarPosition.y, initialCarPosition.z + 5));
+    carDown->setPos(Aftr::Vector(initialCarPosition.x, initialCarPosition.y, initialCarPosition.z + 5));
+
     // Reset visibility states
     car_test->isVisible = true;
     car_turn->isVisible = false;
     car_other_side->isVisible = false;
     car_new->isVisible = false;
+    carMain->isVisible = false;
+    carRight->isVisible = false;
+    carLeft->isVisible = false;
+    carDown->isVisible = true;
 }
+
 void GLViewSpeedRacer::updateActiveKeys(SDL_KeyCode keycode, bool state)
 {
     active_keys[keycode] = state;
@@ -1819,3 +1807,4 @@ void GLViewSpeedRacer::hideAllCars2() {
     if (carLeft) carLeft->isVisible = false;
     if (carDown) carDown->isVisible = false;
 }
+

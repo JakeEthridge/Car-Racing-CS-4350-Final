@@ -32,29 +32,37 @@ void NetMsgChangeCarSkin::onMessageArrived() {
     if (glView) {
         if (player == "Player1") {
             if (skinType == "Dodge") {
+                glView->hideAllCars();
                 glView->spawnPlayer1();
             }
             else if (skinType == "Ford") {
+                glView->hideAllCars();
                 glView->OtherCarSkin1();
             }
             else if (skinType == "Sports Car") {
+                glView->hideAllCars();
                 glView->OtherCarSkin2();
             }
             else if (skinType == "CyberTrunk") {
+                glView->hideAllCars();
                 glView->OtherCarSkin3();
             }
         }
         else if (player == "Player2") {
             if (skinType == "Dodge") {
+                glView->hideAllCars2();
                 glView->spawnPlayer2();
             }
             else if (skinType == "Ford") {
+                glView->hideAllCars2();
                 glView->spawnPlayer2Skin1();
             }
             else if (skinType == "Sports Car") {
+                glView->hideAllCars2();
                 glView->spawnPlayer2Skin2();
             }
             else if (skinType == "CyberTrunk") {
+                glView->hideAllCars2();
                 glView->spawnPlayer2Skin3();
             }
         }

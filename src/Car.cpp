@@ -124,10 +124,10 @@ void Car::onUpdateWO()
 {
     WO::onUpdateWO();
 
-    // translation
+    // Translation
     this->setPosition(*positionInfo);
 
-    // relative rotations 
+    // Relative rotations 
     if (prev_relativeRotationInfo != curr_relativeRotationInfo) {
         this->rotateAboutRelX(degToRad(curr_relativeRotationInfo.x - prev_relativeRotationInfo.x));
         this->rotateAboutRelY(degToRad(curr_relativeRotationInfo.y - prev_relativeRotationInfo.y));
@@ -138,7 +138,7 @@ void Car::onUpdateWO()
         prev_relativeRotationInfo = curr_relativeRotationInfo;
     }
 
-    // global rotations
+    // Global rotations
     if (prev_globalRotationInfo != curr_globalRotationInfo) {
         this->rotateAboutGlobalX(degToRad(curr_globalRotationInfo.x - prev_globalRotationInfo.x));
         this->rotateAboutGlobalY(degToRad(curr_globalRotationInfo.y - prev_globalRotationInfo.y));
@@ -148,7 +148,18 @@ void Car::onUpdateWO()
 
         prev_globalRotationInfo = curr_globalRotationInfo;
     }
+
+    // Detect collision by checking for a sudden stop reduction in speed
+    float currentSpeed = pxRigidDynamic->getLinearVelocity().magnitude();
+    if (previousVelocity - currentSpeed > 10.0f) // Adjust the threshold as needed
+    {
+        if (CrashSound) {
+            CrashSound->play2D("../../../modules/SpeedRacer/mm/sounds/crash.wav", false); // Play the crash sound once
+        }
+    }
+    previousVelocity = currentSpeed; // Update the previous velocity
 }
+
 
 void Car::rotateCar(float angle, const physx::PxVec3& axis)
 {

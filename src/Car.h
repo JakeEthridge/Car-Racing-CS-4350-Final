@@ -4,6 +4,7 @@
 #include <memory>
 #include "PxPhysicsAPI.h"
 #include "ManagerOpenGLState.h" 
+#include "irrKlang.h"
 
 class Car : public Aftr::WO {
 public:
@@ -36,7 +37,8 @@ protected:
     Aftr::Vector curr_globalRotationInfo, prev_globalRotationInfo;
     //physx::PxRigidDynamic* pxRigidDynamic = nullptr;
     float currentSpeed;
-
+    float previousVelocity;
+    irrklang::ISoundEngine* CrashSound = irrklang::createIrrKlangDevice();
     Car(const std::string& modelFileName, Aftr::Vector scale, Aftr::MESH_SHADING_TYPE shadingType, physx::PxPhysics* pxPhysics, physx::PxScene* pxScene, Aftr::Mat4 pose);
 
 };
