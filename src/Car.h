@@ -28,6 +28,8 @@ public:
     physx::PxRigidDynamic* getRigidDynamic() const { return pxRigidDynamic; }
     physx::PxRigidDynamic* pxRigidDynamic = nullptr;
     void setSpeed(float speed);
+    void enablePhysics();
+
 protected:
     Aftr::Vector p = Aftr::Vector(10, 15, 4);
     Aftr::Vector* positionInfo = &p;
@@ -36,6 +38,7 @@ protected:
     Aftr::Vector curr_relativeRotationInfo, prev_relativeRotationInfo;
     Aftr::Vector curr_globalRotationInfo, prev_globalRotationInfo;
     //physx::PxRigidDynamic* pxRigidDynamic = nullptr;
+    bool physicsEnabled; // Flag to control whether physics is applied
     float currentSpeed;
     float previousVelocity;
     irrklang::ISoundEngine* CrashSound = irrklang::createIrrKlangDevice();
