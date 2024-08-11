@@ -673,7 +673,7 @@ void Aftr::GLViewSpeedRacer::loadMap()
             return; // Skip the rest of the update while in the start screen
         }
         else if (gameState == LOADING) {
-            if (elapsedTime < 10000) { // 10 seconds in milliseconds
+            if (elapsedTime < 20000) { // 10 seconds in milliseconds
                 // Show loading screen
                 ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
                 ImGui::SetNextWindowSize(ImVec2(displaySize.x, displaySize.y), ImGuiCond_Always);
