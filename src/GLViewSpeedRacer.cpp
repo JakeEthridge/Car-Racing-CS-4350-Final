@@ -1659,7 +1659,7 @@ SDL_Texture* GLViewSpeedRacer::loadTexture(const std::string& path) {
     SDL_FreeSurface(surface);
 
     if (!texture) {
-        printf("Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
+        printf("Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError());//
     }
 
     return texture;
