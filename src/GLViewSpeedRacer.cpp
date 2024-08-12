@@ -600,7 +600,7 @@ void Aftr::GLViewSpeedRacer::loadMap()
 
 
     // Default song
-    engine->play2D("../../../modules/SpeedRacer/mm/sounds/ride.mp3", true);
+    //engine->play2D("../../../modules/SpeedRacer/mm/sounds/ride.mp3", true);
 
     // Add sound sources for grid terrain functions
     irrklang::ISoundSource* gridTerrainSound = soundEngine->addSoundSourceFromFile((ManagerEnvironmentConfiguration::getLMM() + "/sounds/nature.wav").c_str());
@@ -618,6 +618,9 @@ void Aftr::GLViewSpeedRacer::loadMap()
     std::string basePath = ManagerEnvironmentConfiguration::getLMM() + "/images/";
     std::string startImagePath = basePath + "start_image.png";
     std::string loadingImagePath = basePath + "loading_image.png";
+    // Load images from library
+    std::string startImagePath = "../../../modules/SpeedRacer/mm/images/start_image.png";
+    std::string loadingImagePath = "../../../modules/SpeedRacer/mm/images/loading_image.png";
 
     startImage = loadTexture(startImagePath);
     if (!startImage) {
@@ -1650,7 +1653,8 @@ SDL_Texture* GLViewSpeedRacer::loadTexture(const std::string& path) {
         printf("Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError());
         return nullptr;
     }
-
+    SDL_Window* window = SDL_CreateWindow("SpeedRacer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_OPENGL);
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
 
