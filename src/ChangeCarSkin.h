@@ -15,12 +15,12 @@
 
 
 namespace Aftr {
-    class NetMsgSwitchCarSkin : public NetMsg {
+    class NetMsgStartToLoading : public NetMsg {
     public:
-        NetMsgMacroDeclaration(NetMsgSwitchCarSkin);
+        NetMsgMacroDeclaration(NetMsgStartToLoading);
 
-        NetMsgSwitchCarSkin();
-        virtual ~NetMsgSwitchCarSkin();
+        NetMsgStartToLoading();
+        virtual ~NetMsgStartToLoading();
 
         virtual bool toStream(NetMessengerStreamBuffer& os) const override;
         virtual bool fromStream(NetMessengerStreamBuffer& is) override;

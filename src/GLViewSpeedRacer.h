@@ -68,7 +68,8 @@ namespace Aftr
         void spawnPlayer2Skin3();
         void hideAllCars();
         void hideAllCars2();
-        void checkCollisionAndPlaySound(Car* car);
+        void respawnSelectedCar();
+        void handleSoundControl();
         Car* getVisibleCar1() {
             if (car_test->isVisible) return car_test;
             if (car_turn->isVisible) return car_turn;
@@ -84,9 +85,11 @@ namespace Aftr
             if (carDown->isVisible) return carDown;
             return nullptr;
         }
+        void startLoadingProcess();
+        bool isNetworkEnabled; // Flag to enable/disable network messaging
         bool followCar1; // Add this member variable to track the current car group
         // Initialize the static member
-        bool isMuted = false;
+        //bool isMuted = false;
         // Cars1
         Car* car_test;
         Car* car_turn;
@@ -98,12 +101,18 @@ namespace Aftr
         Car* carRight;
         Car* carLeft;
         Car* carDown;
-
+        int selectedSkin = 0; // Default value or initialize as needed
         // Simple linear interpolation function
         float lerp(float a, float b, float t) {
             return a + t * (b - a);
         }
-      
+        irrklang::ISoundEngine* soundEngine = irrklang::createIrrKlangDevice();
+        irrklang::ISoundEngine* drivingSound = irrklang::createIrrKlangDevice();
+        irrklang::ISoundEngine* StartAudio = irrklang::createIrrKlangDevice();
+        //bool isSpacePressed = false; // Flag to indicate if the space key is pressed
+        bool showBlackScreen = true;
+        static bool isMuted; // Define as static
+         static int selectedMusicIndex; // Declare static member
     protected:
         GLViewSpeedRacer(const std::vector<std::string>& args, physx::PxPhysics* pxPhysics, physx::PxScene* pxScene);
         virtual void onCreate();
@@ -132,8 +141,7 @@ namespace Aftr
         // Variables for collision detection
        
 
-        irrklang::ISoundEngine* soundEngine = irrklang::createIrrKlangDevice();
-        irrklang::ISoundEngine* drivingSound = irrklang::createIrrKlangDevice();
+       
         std::unordered_map<WO*, irrklang::ISoundSource*> defaultSounds;
         std::vector<std::string> soundList;
         std::map<SDL_KeyCode, bool> active_keys;
@@ -194,7 +202,7 @@ namespace Aftr
         static Uint32 pausedTime;
         bool isFullSize = true;
 
-        bool showBlackScreen = true;
+       
         enum CarModel {
             CAR_MODEL_DODGE,
             CAR_MODEL_FORD,

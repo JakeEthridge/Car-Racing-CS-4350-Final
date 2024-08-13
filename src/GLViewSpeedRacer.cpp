@@ -51,8 +51,14 @@
 #include <NetMsgCarMovement.h>
 #include <ChangePlayer2Skin.h>
 #include <ChangeCarSkin.h>
+#include <NetMsgAudio.h>
 
-using namespace Aftr;
+namespace Aftr {
+
+    bool GLViewSpeedRacer::isMuted = false; // Define static member
+    int GLViewSpeedRacer::selectedMusicIndex = 0; // Define static member
+
+  
 
 using namespace irrklang;
 
@@ -103,11 +109,11 @@ void GLViewSpeedRacer::onCreate()
 }
 
 
-GLViewSpeedRacer::~GLViewSpeedRacer()
+GLViewSpeedRacer::~GLViewSpeedRacer() 
 {
     //Implicitly calls GLView::~GLView()
 }
-void GLViewSpeedRacer::updateWorld() {
+void GLViewSpeedRacer::updateWorld()  {
     GLView::updateWorld();
     Uint32 currentTime = SDL_GetTicks();
 
@@ -249,8 +255,8 @@ void GLViewSpeedRacer::onKeyDown(const SDL_KeyboardEvent& key) {
         car_other_side->setPos(Aftr::Vector(newPos.x - 12, newPos.y, newPos.z));
         car_new->setPos(Aftr::Vector(newPos.x, newPos.y + 12, newPos.z));
 
-        // Send the updated positions and visibility to the other instance
-        if (client) {
+        // Send the updated positions and visibility to the other instance if network is enabled
+        if (isNetworkEnabled && client) {
             NetMsgCarMovement msg;
             msg.car_testPosition = Aftr::Vector(newPos.x, newPos.y, newPos.z);
             msg.car_turnPosition = Aftr::Vector(newPos.x + 12, newPos.y, newPos.z);
@@ -278,18 +284,18 @@ void GLViewSpeedRacer::onKeyDown(const SDL_KeyboardEvent& key) {
         car_test->setPos(Aftr::Vector(newPos.x, newPos.y, newPos.z));
         car_new->setPos(Aftr::Vector(newPos.x, newPos.y + 12, newPos.z));
 
-        // Send the updated positions and visibility to the other instance
-        if (this->client) {
+        // Send the updated positions and visibility to the other instance if network is enabled
+        if (isNetworkEnabled && client) {
             NetMsgCarMovement msg;
             msg.car_other_sidePosition = Aftr::Vector(newPos.x - 12, newPos.y, newPos.z);
             msg.car_turnPosition = Aftr::Vector(newPos.x + 12, newPos.y, newPos.z);
             msg.car_testPosition = Aftr::Vector(newPos.x, newPos.y, newPos.z);
             msg.car_newPosition = Aftr::Vector(newPos.x, newPos.y + 12, newPos.z);
-            this->client->sendNetMsgSynchronousTCP(msg);
+            client->sendNetMsgSynchronousTCP(msg);
 
             NetMsgCarVisibility visibilityMsg;
             visibilityMsg.carName = "car_other_side";
-            this->client->sendNetMsgSynchronousTCP(visibilityMsg);
+            client->sendNetMsgSynchronousTCP(visibilityMsg);
         }
     }
 
@@ -307,8 +313,8 @@ void GLViewSpeedRacer::onKeyDown(const SDL_KeyboardEvent& key) {
         car_other_side->setPos(Aftr::Vector(newPos.x - 12, newPos.y, newPos.z));
         car_new->setPos(Aftr::Vector(newPos.x, newPos.y + 12, newPos.z));
 
-        // Send the updated positions and visibility to the other instance
-        if (client) {
+        // Send the updated positions and visibility to the other instance if network is enabled
+        if (isNetworkEnabled && client) {
             NetMsgCarMovement msg;
             msg.car_testPosition = Aftr::Vector(newPos.x, newPos.y, newPos.z);
             msg.car_turnPosition = Aftr::Vector(newPos.x + 12, newPos.y, newPos.z);
@@ -336,8 +342,8 @@ void GLViewSpeedRacer::onKeyDown(const SDL_KeyboardEvent& key) {
         car_other_side->setPos(Aftr::Vector(newPos.x - 12, newPos.y, newPos.z));
         car_new->setPos(Aftr::Vector(newPos.x, newPos.y + 12, newPos.z));
 
-        // Send the updated positions and visibility to the other instance
-        if (client) {
+        // Send the updated positions and visibility to the other instance if network is enabled
+        if (isNetworkEnabled && client) {
             NetMsgCarMovement msg;
             msg.car_testPosition = Aftr::Vector(newPos.x, newPos.y, newPos.z);
             msg.car_turnPosition = Aftr::Vector(newPos.x + 12, newPos.y, newPos.z);
@@ -507,6 +513,13 @@ void GLViewSpeedRacer::onKeyDown(const SDL_KeyboardEvent& key) {
             std::cout << "Player 1 Wins!" << std::endl;
         }
     }
+    // Handle Enter key press
+    if (key.keysym.sym == SDLK_RETURN) {
+        respawnSelectedCar();
+    }
+    if(key.keysym.sym == SDLK_m) {
+        soundEngine->stopAllSounds();
+	}
 }
 
 void GLViewSpeedRacer::onKeyUp(const SDL_KeyboardEvent& key)
@@ -641,26 +654,43 @@ void Aftr::GLViewSpeedRacer::loadMap()
     }
 
     // Load and play the start screen soundtrack
-    startScreenSoundtrack = soundEngine->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/StartMenu.wav").c_str(), true, false, true);
+    startScreenSoundtrack = soundEngine->play2D(
+        (ManagerEnvironmentConfiguration::getLMM() + "/sounds/StartMenu.wav").c_str(),
+        true,  // loop
+        false, // stream
+        true   // start paused
+    );
+
+    // Set the volume to a very low level (e.g., 0.1)
+    if (startScreenSoundtrack) {
+        startScreenSoundtrack->setVolume(0.1f); // Volume range is from 0.0f (mute) to 1.0f (full volume)
+    }
+
+    // Resume playback if needed
+    if (startScreenSoundtrack) {
+        startScreenSoundtrack->setIsPaused(false);
+    }
+
     // Declare a boolean to track the window size state
 
     WOImGui* gui = WOImGui::New(nullptr);
     gui->setLabel("Switch Terrain");
     gui->subscribe_drawImGuiWidget([this, gui]() {
+
         // Get the size of the display
         ImVec2 displaySize = ImGui::GetIO().DisplaySize;
 
         // Calculate the elapsed time since the loading started
         Uint32 currentTime = SDL_GetTicks();
         Uint32 elapsedTime = currentTime - loadingStartTime;
-
+        float volumeLevel = 0.0f; // Volume starts at zero
         // Handle the different game states
         if (gameState == START_SCREEN) {
             // Show start screen
             ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
             ImGui::SetNextWindowSize(ImVec2(displaySize.x, displaySize.y), ImGuiCond_Always);
             ImGui::Begin("Start Game", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-
+            ImGui::Text("SpeedRacer");
             // Display the start image
             if (startImage) {
                 ImGui::Image((void*)(intptr_t)startImage, displaySize);
@@ -669,16 +699,30 @@ void Aftr::GLViewSpeedRacer::loadMap()
                 ImGui::SetCursorPos(ImVec2(displaySize.x / 2.0f - 50.0f, displaySize.y - 100.0f));
                 ImGui::Text("Press Space Bar to Start");
             }
+            // Toggle Network Messaging
+            if (ImGui::Button("Toggle Network Messaging")) {
+                isNetworkEnabled = !isNetworkEnabled;
+            }
+
+            // Display the current state of the network messaging
+            ImGui::Text("Network Messaging: %s", isNetworkEnabled ? "Enabled" : "Disabled");
+            // Volume Slider
+            ImGui::SetCursorPos(ImVec2(displaySize.x / 2.0f - 100.0f, displaySize.y / 2.0f - 50.0f));
+            ImGui::SliderFloat("Volume", &volumeLevel, 0.0f, 1.0f); // Slider to control volume
+            if (startScreenSoundtrack) {
+                startScreenSoundtrack->setVolume(volumeLevel); // Update volume based on slider value
+            }
 
             ImGui::End();
 
             // Check if the space bar is pressed
             const Uint8* state = SDL_GetKeyboardState(nullptr);
             if (state[SDL_SCANCODE_SPACE]) {
-                // Transition to the loading screen
-                gameState = LOADING;
-                loadingStartTime = SDL_GetTicks();
-                isLoading = true;
+                startLoadingProcess();
+                soundEngine->stopAllSounds();
+                // Send the NetMsg for the transition
+                NetMsgStartToLoading msg;
+                client->sendNetMsgSynchronousTCP(msg);
             }
 
             return; // Skip the rest of the update while in the start screen
@@ -723,9 +767,17 @@ void Aftr::GLViewSpeedRacer::loadMap()
             if (state[SDL_SCANCODE_SPACE]) {
                 showBlackScreen = false; // Hide the black screen
                 this->spawnPlayer1();
+                NetMsgBlackScreen msg;
+                client->sendNetMsgSynchronousTCP(msg);
             }
         }
         ImGui::Begin("Racecar Game Control Panel");
+        if (ImGui::Button("Toggle Network Messaging")) {
+            isNetworkEnabled = !isNetworkEnabled;
+        }
+
+        // Display the current state of the network messaging
+        ImGui::Text("Network Messaging: %s", isNetworkEnabled ? "Enabled" : "Disabled");
         ImGui::Separator();
         ImGui::Text("Lap: %d/3", lapNumber);
         ImGui::Separator();
@@ -772,7 +824,7 @@ void Aftr::GLViewSpeedRacer::loadMap()
         }
         ImGui::Separator();
         // Main GUI code (this part is executed when gameState is MAIN_GUI)
-        static float backgroundVolume = 1.0f;
+        static float backgroundVolume = 0.3f;
         static bool wasSwitchToAnotherGridPressed = false;
         static bool wasSwitchToDefaultGridPressed = false;
         if (ImGui::CollapsingHeader("Racetrack Map Selection")) {
@@ -1740,15 +1792,21 @@ void GLViewSpeedRacer::updateControls()
 
 
 void GLViewSpeedRacer::sendTerrainChangeMessage(bool useAnotherGrid, float moveDownAmount, float rotateAmount, float moveNegativeXAmount) {
+    // Check if network messaging is enabled
+    if (!isNetworkEnabled) {
+        return; // Exit the function if network messaging is disabled
+    }
+
     NetMsgSwitchTerrain msg;
     msg.useAnotherGrid = useAnotherGrid;
     msg.moveDownAmount = moveDownAmount;
     msg.rotateAmount = rotateAmount;
     msg.moveNegativeXAmount = moveNegativeXAmount;
-    //
+
     // Send network message
     client->sendNetMsgSynchronousTCP(msg);
 }
+
 void GLViewSpeedRacer::handleCarMovement(int carModel, int keyPress, float moveAmount) {
     Car* currentCar = nullptr;
 
@@ -1818,4 +1876,49 @@ void GLViewSpeedRacer::hideAllCars2() {
     if (carLeft) carLeft->isVisible = false;
     if (carDown) carDown->isVisible = false;
 }
+void GLViewSpeedRacer::startLoadingProcess() {
+    // Transition to the loading screen
+    gameState = LOADING;
+    loadingStartTime = SDL_GetTicks();
+    isLoading = true;
 
+    // Additional logic for handling the loading process
+}
+void GLViewSpeedRacer::respawnSelectedCar() {
+    // Determine which car skin is currently selected
+    std::string skinType;
+    switch (selectedSkin) {
+    case 0: skinType = "Dodge"; break;
+    case 1: skinType = "Ford"; break;
+    case 2: skinType = "Sports Car"; break;
+    case 3: skinType = "CyberTrunk"; break;
+    }
+
+    // Respawn the selected car
+    if (skinType == "Dodge") {
+        hideAllCars();
+        this->spawnPlayer1(); // Respawn Dodge skin
+    }
+    else if (skinType == "Ford") {
+        hideAllCars();
+        this->OtherCarSkin1(); // Respawn Ford skin
+    }
+    else if (skinType == "Sports Car") {
+        hideAllCars();
+        this->OtherCarSkin2(); // Respawn Sports Car skin
+    }
+    else if (skinType == "CyberTrunk") {
+        hideAllCars();
+        this->OtherCarSkin3(); // Respawn CyberTrunk skin
+    }
+
+    // Send network message to respawn car in other instances
+    if (client) {
+        NetMsgChangeCarSkin msg;
+        msg.skinType = skinType;
+        msg.player = "Player1";
+        client->sendNetMsgSynchronousTCP(msg);
+    }
+}
+
+}

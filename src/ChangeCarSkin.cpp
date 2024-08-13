@@ -10,36 +10,27 @@
 
 using namespace Aftr;
 
-NetMsgMacroDefinition(NetMsgSwitchCarSkin);
+NetMsgMacroDefinition(NetMsgStartToLoading);
 
-NetMsgSwitchCarSkin::NetMsgSwitchCarSkin() : NetMsg(), skinType("") {}
+NetMsgStartToLoading::NetMsgStartToLoading() : NetMsg() {}
 
-NetMsgSwitchCarSkin::~NetMsgSwitchCarSkin() {}
+NetMsgStartToLoading::~NetMsgStartToLoading() {}
 
-bool NetMsgSwitchCarSkin::toStream(NetMessengerStreamBuffer& os) const {
-    os << skinType;
+bool NetMsgStartToLoading::toStream(NetMessengerStreamBuffer& os) const {
+    // You can add any data you need to send here
     return true;
 }
 
-bool NetMsgSwitchCarSkin::fromStream(NetMessengerStreamBuffer& is) {
-    is >> skinType;
+bool NetMsgStartToLoading::fromStream(NetMessengerStreamBuffer& is) {
+    // You can receive any data here if needed
     return true;
 }
 
-void NetMsgSwitchCarSkin::onMessageArrived() {
+void NetMsgStartToLoading::onMessageArrived() {
     GLViewSpeedRacer* glView = dynamic_cast<GLViewSpeedRacer*>(ManagerGLView::getGLView());
     if (glView) {
-        if (skinType == "Dodge") {
-            glView->spawnPlayer1(); // Function for Dodge cars
-        }
-        else if (skinType == "Ford") {
-            glView->OtherCarSkin1(); // Function for Ford cars
-        }
-        else if (skinType == "Sports Car") {
-            glView->OtherCarSkin2(); // Function for Sports cars
-        }
-        else if (skinType == "CyberTrunk") {
-            glView->OtherCarSkin3(); // Function for Audi R8 cars
-        }
+        // Implement what should happen when the message arrives
+        // For example, this could start the loading process on another instance
+        glView->startLoadingProcess(); // Placeholder function, implement it as needed
     }
 }
