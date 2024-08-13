@@ -196,3 +196,4 @@ void Car::setSpeed(float speed) {
         this->pxRigidDynamic->setLinearVelocity(velocity * speed);
     }
 }
+

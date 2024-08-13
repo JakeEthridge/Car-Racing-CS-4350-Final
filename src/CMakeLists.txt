@@ -92,8 +92,8 @@ ENDIF()
 #This can be made WIN32 or UNIX specific, depending on the platform, if desired.
 TARGET_INCLUDE_DIRECTORIES( ${PROJECT_NAME} PRIVATE 
                             "../../../modules/SpeedRacer/mm/libraries/irrKlang-64bit-1.6.0/include/"
-                           "${AFTR_USERLAND_LIB_PATH}/PhysX/physx/include/"
-                           "../../../modules/SpeedRacer/mm/libraries/Physxs/include/"
+                           #"${AFTR_USERLAND_LIB_PATH}/PhysX/physx/include/"
+                           "../../../modules/SpeedRacer/mm/libraries/PhysX/include/"
                            #"${AFTR_USR_INCLUDE_DIR}"
                            #"${CMAKE_SOURCE_DIR}/../my3rdPartyLib/include/"
                           )

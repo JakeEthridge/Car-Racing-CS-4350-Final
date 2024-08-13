@@ -492,11 +492,19 @@ void GLViewSpeedRacer::onKeyDown(const SDL_KeyboardEvent& key) {
         active_keys[SDLK_6] = !active_keys[SDLK_6];
     }
     // Handle 0 key press to increment the lap number
-    if (key.keysym.sym == SDLK_0) {
+    if (key.keysym.sym == SDLK_LSHIFT) {
         lapNumber++;
         if (lapNumber >= 3) {
             // Optional: handle additional logic when the player wins
-            std::cout << "Player Wins!" << std::endl;
+            std::cout << "Player 2 Wins!" << std::endl;
+        }
+    }
+    // Handle 0 key press to increment the lap number
+    if (key.keysym.sym == SDLK_RSHIFT) {
+        lapNumber++;
+        if (lapNumber >= 3) {
+            // Optional: handle additional logic when the player wins
+            std::cout << "Player 1 Wins!" << std::endl;
         }
     }
 }
@@ -616,11 +624,11 @@ void Aftr::GLViewSpeedRacer::loadMap()
 
     // Load images using ManagerEnvironmentConfiguration::getLMM() path
     std::string basePath = ManagerEnvironmentConfiguration::getLMM() + "/images/";
-    std::string startImagePath = basePath + "start_image.png";
-    std::string loadingImagePath = basePath + "loading_image.png";
+    std::string startImagePath = basePath + "start_images.png";
+    std::string loadingImagePath = basePath + "loading_images.png";
     // Load images from library
-    std::string startImagePath = "../../../modules/SpeedRacer/mm/images/start_image.png";
-    std::string loadingImagePath = "../../../modules/SpeedRacer/mm/images/loading_image.png";
+    //std::string startImagePath = "../../../modules/SpeedRacer/mm/images/start_image.png";
+    //std::string loadingImagePath = "../../../modules/SpeedRacer/mm/images/loading_image.png";
 
     startImage = loadTexture(startImagePath);
     if (!startImage) {
@@ -1653,13 +1661,12 @@ SDL_Texture* GLViewSpeedRacer::loadTexture(const std::string& path) {
         printf("Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError());
         return nullptr;
     }
-    SDL_Window* window = SDL_CreateWindow("SpeedRacer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_OPENGL);
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
 
     if (!texture) {
-        printf("Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError());//
+        printf("Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
     }
 
     return texture;

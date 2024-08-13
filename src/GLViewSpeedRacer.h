@@ -68,6 +68,7 @@ namespace Aftr
         void spawnPlayer2Skin3();
         void hideAllCars();
         void hideAllCars2();
+        void checkCollisionAndPlaySound(Car* car);
         Car* getVisibleCar1() {
             if (car_test->isVisible) return car_test;
             if (car_turn->isVisible) return car_turn;
@@ -102,6 +103,7 @@ namespace Aftr
         float lerp(float a, float b, float t) {
             return a + t * (b - a);
         }
+      
     protected:
         GLViewSpeedRacer(const std::vector<std::string>& args, physx::PxPhysics* pxPhysics, physx::PxScene* pxScene);
         virtual void onCreate();
@@ -127,6 +129,8 @@ namespace Aftr
         std::vector<Car*> spawnedCars; // Vector to keep track of spawned car objects
         Car* selectedCar = nullptr; // Pointer to the currently selected car
 
+        // Variables for collision detection
+       
 
         irrklang::ISoundEngine* soundEngine = irrklang::createIrrKlangDevice();
         irrklang::ISoundEngine* drivingSound = irrklang::createIrrKlangDevice();

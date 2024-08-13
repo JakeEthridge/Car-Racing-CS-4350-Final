@@ -28,7 +28,8 @@ public:
     physx::PxRigidDynamic* getRigidDynamic() const { return pxRigidDynamic; }
     physx::PxRigidDynamic* pxRigidDynamic = nullptr;
     void setSpeed(float speed);
-    void enablePhysics();
+    float previousVelocity; // To store the previous speed of the car
+    irrklang::ISoundEngine* CrashSound = irrklang::createIrrKlangDevice();
 
 protected:
     Aftr::Vector p = Aftr::Vector(10, 15, 4);
@@ -40,8 +41,9 @@ protected:
     //physx::PxRigidDynamic* pxRigidDynamic = nullptr;
     bool physicsEnabled; // Flag to control whether physics is applied
     float currentSpeed;
-    float previousVelocity;
-    irrklang::ISoundEngine* CrashSound = irrklang::createIrrKlangDevice();
+
+  Uint32 startTime; // Start time in milliseconds
+  bool hasPlayedCrashSound;
     Car(const std::string& modelFileName, Aftr::Vector scale, Aftr::MESH_SHADING_TYPE shadingType, physx::PxPhysics* pxPhysics, physx::PxScene* pxScene, Aftr::Mat4 pose);
 
 };
