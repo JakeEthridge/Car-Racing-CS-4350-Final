@@ -69,7 +69,16 @@ namespace Aftr
         void hideAllCars();
         void hideAllCars2();
         void respawnSelectedCar();
-        void handleSoundControl();
+  
+       
+        bool otherInstanceTerrainLoaded = false; // New variable to track terrain loading in the other instance
+        void handleTerrainLoading() {
+            if (isTerrainLoaded() && otherInstanceTerrainLoaded) {
+                // Transition to the main GUI after terrain is loaded in both instances
+                gameState = MAIN_GUI;
+                isLoading = false;
+            }
+        }
         Car* getVisibleCar1() {
             if (car_test->isVisible) return car_test;
             if (car_turn->isVisible) return car_turn;

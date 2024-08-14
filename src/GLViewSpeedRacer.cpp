@@ -52,6 +52,7 @@
 #include <ChangePlayer2Skin.h>
 #include <ChangeCarSkin.h>
 #include <NetMsgAudio.h>
+#include <NetMsgTerrainLoaded .h>
 
 namespace Aftr {
 
@@ -690,7 +691,12 @@ void Aftr::GLViewSpeedRacer::loadMap()
             ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
             ImGui::SetNextWindowSize(ImVec2(displaySize.x, displaySize.y), ImGuiCond_Always);
             ImGui::Begin("Start Game", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+            // Set the font size larger for the "SpeedRacer" text
+            ImGui::SetCursorPos(ImVec2(displaySize.x / 2.0f - 50.0f, displaySize.y - 500.0f)); // Adjust Y value as needed for spacing
+            ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]); // Assuming you have a larger font loaded in index 1
             ImGui::Text("SpeedRacer");
+            ImGui::PopFont();
+
             // Display the start image
             if (startImage) {
                 ImGui::Image((void*)(intptr_t)startImage, displaySize);
@@ -699,16 +705,23 @@ void Aftr::GLViewSpeedRacer::loadMap()
                 ImGui::SetCursorPos(ImVec2(displaySize.x / 2.0f - 50.0f, displaySize.y - 100.0f));
                 ImGui::Text("Press Space Bar to Start");
             }
-            // Toggle Network Messaging
+
+            // Position the volume slider below and to the left of the "Press Space Bar to Start" text
+            ImGui::SetCursorPos(ImVec2(displaySize.x / 2.0f - 60.0f, displaySize.y - 80.0f)); // Adjust these values as needed
+
+            // Set a smaller width for the volume slider
+            ImGui::PushItemWidth(250.0f); // Set the slider width to 150 pixels
+            ImGui::SliderFloat("Volume", &volumeLevel, 0.0f, 1.0f); // Slider to control volume
+            ImGui::PopItemWidth();
+            // Position the "Toggle Network Messaging" button below the volume slider
+            ImGui::SetCursorPos(ImVec2(displaySize.x / 2.0f - 40.0f, displaySize.y - 60.0f)); // Adjust to position below the slider
             if (ImGui::Button("Toggle Network Messaging")) {
                 isNetworkEnabled = !isNetworkEnabled;
             }
 
-            // Display the current state of the network messaging
+            // Display the current state of the network messaging below the button
+            ImGui::SetCursorPos(ImVec2(displaySize.x / 2.0f - 40.0f, displaySize.y - 40.0f)); // Adjust to position below the button
             ImGui::Text("Network Messaging: %s", isNetworkEnabled ? "Enabled" : "Disabled");
-            // Volume Slider
-            ImGui::SetCursorPos(ImVec2(displaySize.x / 2.0f - 100.0f, displaySize.y / 2.0f - 50.0f));
-            ImGui::SliderFloat("Volume", &volumeLevel, 0.0f, 1.0f); // Slider to control volume
             if (startScreenSoundtrack) {
                 startScreenSoundtrack->setVolume(volumeLevel); // Update volume based on slider value
             }
@@ -727,31 +740,30 @@ void Aftr::GLViewSpeedRacer::loadMap()
 
             return; // Skip the rest of the update while in the start screen
         }
-        else if (gameState == LOADING) {
-            if (elapsedTime < 20000) { // 10 seconds in milliseconds
-                // Show loading screen
-                ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
-                ImGui::SetNextWindowSize(ImVec2(displaySize.x, displaySize.y), ImGuiCond_Always);
-                ImGui::Begin("Loading...", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+else if (gameState == LOADING) {
+    if (elapsedTime < 20000) {
+        // Show loading screen
+        ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
+        ImGui::SetNextWindowSize(ImVec2(displaySize.x, displaySize.y), ImGuiCond_Always);
+        ImGui::Begin("Loading...", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 
-                // Display the loading image
-                if (loadingImage) {
-                    ImGui::Image((void*)(intptr_t)loadingImage, displaySize);
-                }
-                else {
-                    ImGui::SetCursorPos(ImVec2(displaySize.x / 2.0f - 50.0f, displaySize.y - 100.0f));
-                    ImGui::Text("Loading...");
-                }
-
-                ImGui::End();
-                return; // Skip the rest of the update while loading
-            }
-            else if (isTerrainLoaded()) {
-                // Transition to the main GUI after terrain is loaded
-                gameState = MAIN_GUI;
-                isLoading = false;
-            }
+        // Display the loading image
+        if (loadingImage) {
+            ImGui::Image((void*)(intptr_t)loadingImage, displaySize);
+        } else {
+            ImGui::SetCursorPos(ImVec2(displaySize.x / 2.0f - 50.0f, displaySize.y - 100.0f));
+            ImGui::Text("Loading...");
         }
+
+        ImGui::End();
+        return; // Skip the rest of the update while loading
+    } else if (isTerrainLoaded() && otherInstanceTerrainLoaded) {
+        // Transition to the main GUI after terrain is loaded in both instances
+        gameState = MAIN_GUI;
+        isLoading = false;
+    }
+}
+
         // Draw a black background behind the GUI if showBlackScreen is true
         if (showBlackScreen) {
             ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
@@ -932,7 +944,7 @@ void Aftr::GLViewSpeedRacer::loadMap()
                 }
 
                 // Send network message to switch car skin in other instances
-                if (client) {
+                if (isNetworkEnabled && client) {
                     NetMsgChangeCarSkin msg;
                     switch (selectedSkin) {
                     case 0: msg.skinType = "Dodge"; break;
@@ -1027,7 +1039,7 @@ void Aftr::GLViewSpeedRacer::loadMap()
                 }
 
                 // Send network message to switch car skin in other instances
-                if (client) {
+                if (isNetworkEnabled && client) {
                     NetMsgChangeCarSkin msg;
                     switch (selectedSkinPlayer2) {
                     case 0: msg.skinType = "Dodge"; break;
@@ -1792,11 +1804,11 @@ void GLViewSpeedRacer::updateControls()
 
 
 void GLViewSpeedRacer::sendTerrainChangeMessage(bool useAnotherGrid, float moveDownAmount, float rotateAmount, float moveNegativeXAmount) {
-    // Check if network messaging is enabled
     if (!isNetworkEnabled) {
-        return; // Exit the function if network messaging is disabled
+        return;
     }
 
+    // Existing message setup...
     NetMsgSwitchTerrain msg;
     msg.useAnotherGrid = useAnotherGrid;
     msg.moveDownAmount = moveDownAmount;
@@ -1805,6 +1817,12 @@ void GLViewSpeedRacer::sendTerrainChangeMessage(bool useAnotherGrid, float moveD
 
     // Send network message
     client->sendNetMsgSynchronousTCP(msg);
+
+    // Send the terrain loaded message after the terrain is loaded
+    if (isTerrainLoaded()) {
+        NetMsgTerrainLoaded terrainLoadedMsg;
+        client->sendNetMsgSynchronousTCP(terrainLoadedMsg);
+    }
 }
 
 void GLViewSpeedRacer::handleCarMovement(int carModel, int keyPress, float moveAmount) {

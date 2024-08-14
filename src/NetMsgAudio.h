@@ -15,17 +15,19 @@
 
 
 namespace Aftr {
-class NetMsgMuteState : public NetMsg {
+class NetMsgTimeTrial : public NetMsg {
 public:
-    NetMsgMacroDeclaration(NetMsgMuteState);
+    NetMsgMacroDeclaration(NetMsgTimeTrial);
     bool isMuted;
     int ownerInstanceId; // The ID of the instance that currently owns the track
-    NetMsgMuteState();
-    ~NetMsgMuteState() override;
+    NetMsgTimeTrial();
+    ~NetMsgTimeTrial() override;
 
     bool toStream(NetMessengerStreamBuffer& os) const override;
     bool fromStream(NetMessengerStreamBuffer& is) override;
     void onMessageArrived() override;
+    enum Action { START, PAUSE, RESET } action;
+    float resetTime; // Only relevant for RESET action
 };
 };
 #endif
