@@ -15,19 +15,23 @@
 
 
 namespace Aftr {
-class NetMsgTimeTrial : public NetMsg {
-public:
-    NetMsgMacroDeclaration(NetMsgTimeTrial);
-    bool isMuted;
-    int ownerInstanceId; // The ID of the instance that currently owns the track
-    NetMsgTimeTrial();
-    ~NetMsgTimeTrial() override;
+    class NetMsgTimerControl : public NetMsg {
+    public:
+        NetMsgMacroDeclaration(NetMsgTimerControl);
 
-    bool toStream(NetMessengerStreamBuffer& os) const override;
-    bool fromStream(NetMessengerStreamBuffer& is) override;
-    void onMessageArrived() override;
-    enum Action { START, PAUSE, RESET } action;
-    float resetTime; // Only relevant for RESET action
-};
+        NetMsgTimerControl();
+        virtual ~NetMsgTimerControl();
+
+        // Define message data
+        bool isTimerRunning;
+
+        // Serialization methods
+        virtual bool toStream(NetMessengerStreamBuffer& os) const override;
+        virtual bool fromStream(NetMessengerStreamBuffer& is) override;
+
+        // Message handling
+        virtual void onMessageArrived() override;
+    };
+
 };
 #endif

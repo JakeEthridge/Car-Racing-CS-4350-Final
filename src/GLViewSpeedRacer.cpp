@@ -114,7 +114,7 @@ GLViewSpeedRacer::~GLViewSpeedRacer()
 {
     //Implicitly calls GLView::~GLView()
 }
-void GLViewSpeedRacer::updateWorld()  {
+void GLViewSpeedRacer::updateWorld() {
     GLView::updateWorld();
     Uint32 currentTime = SDL_GetTicks();
 
@@ -131,6 +131,14 @@ void GLViewSpeedRacer::updateWorld()  {
             physx::PxActor* actor = dynamicActors[i];
             Car* carWO = static_cast<Car*>(actor->userData);
             carWO->updatePoseFromPhysicsEngine();
+
+            // Check if the car is below the Z-axis
+            physx::PxTransform carTransform = carWO->getRigidDynamic()->getGlobalPose();
+            if (carTransform.p.z < -5.0f) {
+                // Apply an upward force to lift the car above the Z-axis
+                physx::PxVec3 upwardForce(0.0f, 0.0f, 1.0f); // Adjust the force value as needed
+                carWO->getRigidDynamic()->addForce(upwardForce, physx::PxForceMode::eIMPULSE);
+            }
         }
 
         Car* visibleCar = followCar1 ? getVisibleCar1() : getVisibleCar2();
@@ -189,6 +197,7 @@ void GLViewSpeedRacer::updateWorld()  {
         this->client = NetMessengerClient::New("127.0.0.1", ManagerEnvironmentConfiguration::getVariableValue("NetServerTransmitPort"));
     }
 }
+
 
 
 void GLViewSpeedRacer::onResizeWindow(GLsizei width, GLsizei height)
@@ -633,6 +642,8 @@ void Aftr::GLViewSpeedRacer::loadMap()
     soundEngine->addSoundSourceAlias(anotherGridTerrainSound, "anotherGridTerrainSound");
     soundList.push_back("anotherGridTerrainSound");
 
+  
+ 
     // Initialize SDL_image
     IMG_Init(IMG_INIT_PNG);
 
@@ -791,6 +802,11 @@ else if (gameState == LOADING) {
         // Display the current state of the network messaging
         ImGui::Text("Network Messaging: %s", isNetworkEnabled ? "Enabled" : "Disabled");
         ImGui::Separator();
+        if (ImGui::Button("Start Race")) {
+            // Play the start race sound
+                soundEngine->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/start_race.wav").c_str(), false);
+           
+        }
         ImGui::Text("Lap: %d/3", lapNumber);
         ImGui::Separator();
         if (ImGui::SliderFloat("Car Speed", &moveAmount, 0.1f, 10.0f)) {
@@ -798,19 +814,33 @@ else if (gameState == LOADING) {
         ImGui::Separator();
         if (ImGui::CollapsingHeader("Game Modes")) {
             ImGui::Text("Time Trials Mode");
-                // Button to start/pause the timer
-                if (ImGui::Button(isTimerRunning ? "Pause Timer" : "Start Timer")) {
-                    if (isTimerRunning) {
-                        // Pause the timer
-                        isTimerRunning = false;
-                        pausedTime = SDL_GetTicks() - timerStartTime;
-                    }
-                    else {
-                        // Resume or start the timer
-                        timerStartTime = SDL_GetTicks() - pausedTime;
-                        isTimerRunning = true;
+            if (ImGui::Button(isTimerRunning ? "Pause Timer" : "Start Timer")) {
+                if (isTimerRunning) {
+                    // Pause the timer
+                    isTimerRunning = false;
+                    pausedTime = SDL_GetTicks() - timerStartTime;
+
+                    // Create and send NetMsgTimerControl with timer paused
+                    NetMsgTimerControl msg;
+                    msg.isTimerRunning = false;
+                    if (isNetworkEnabled) {
+                        client->sendNetMsgSynchronousTCP(msg);
                     }
                 }
+                else {
+                    // Resume or start the timer
+                    timerStartTime = SDL_GetTicks() - pausedTime;
+                    isTimerRunning = true;
+                    pausedTime = 0;
+
+                    // Create and send NetMsgTimerControl with timer running
+                    NetMsgTimerControl msg;
+                    msg.isTimerRunning = true;
+                    if (isNetworkEnabled) {
+                        client->sendNetMsgSynchronousTCP(msg);
+                    }
+                }
+            }
 
                 // Display the reset time slider
                 ImGui::SliderInt("Reset Time (s)", &resetTime, 10, 60);
@@ -1161,6 +1191,7 @@ else if (gameState == LOADING) {
                 }
             }
         }
+
         ImGui::Separator();
         // Button to switch camera view
         if (ImGui::Button("Switch Camera View")) {

@@ -70,7 +70,6 @@ namespace Aftr
         void hideAllCars2();
         void respawnSelectedCar();
   
-       
         bool otherInstanceTerrainLoaded = false; // New variable to track terrain loading in the other instance
         void handleTerrainLoading() {
             if (isTerrainLoaded() && otherInstanceTerrainLoaded) {
@@ -122,6 +121,12 @@ namespace Aftr
         bool showBlackScreen = true;
         static bool isMuted; // Define as static
          static int selectedMusicIndex; // Declare static member
+         // Timer variables
+         static bool isTimerRunning;
+         static Uint32 timerStartTime;
+         static int resetTime;
+         static Uint32 pausedTime;
+         bool isFullSize = true;
     protected:
         GLViewSpeedRacer(const std::vector<std::string>& args, physx::PxPhysics* pxPhysics, physx::PxScene* pxScene);
         virtual void onCreate();
@@ -204,12 +209,7 @@ namespace Aftr
         static bool updateLapPending;
         int currentSkinPlayer2 = -1; // Initialize with an invalid value to indicate no skin is currently active
 
-        // Timer variables
-        static bool isTimerRunning;
-        static Uint32 timerStartTime;
-        static int resetTime;
-        static Uint32 pausedTime;
-        bool isFullSize = true;
+
 
        
         enum CarModel {

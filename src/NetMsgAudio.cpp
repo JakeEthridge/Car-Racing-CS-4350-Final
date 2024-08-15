@@ -1,54 +1,50 @@
-//#pragma once
-//
-//#include "NetMsg.h"
-//#include "GLViewSpeedRacer.h"
-//#include "ManagerGLView.h"
-//#include "NetMessengerStreamBuffer.h"
-//#include "NetMsgMacroMethods.h"
-//#include "NetMsgAudio.h"
-//
-//
-//using namespace Aftr;
-//
-//
-//// Implementation of methods
-//NetMsgTimeTrial::NetMsgTimeTrial() : NetMsg(), action(START), resetTime(30.0f) {}
-//
-//NetMsgTimeTrial::~NetMsgTimeTrial() {}
-//
-//bool NetMsgTimeTrial::fromStream(NetMessengerStreamBuffer& is) {
-//    int actionInt;
-//    is >> actionInt;
-//    action = static_cast<Action>(actionInt);
-//    if (action == RESET) {
-//        is >> resetTime;
-//    }
-//    return true;
-//}
-//
-//bool NetMsgTimeTrial::toStream(NetMessengerStreamBuffer& os) const {
-//    os << static_cast<int>(action);
-//    if (action == RESET) {
-//        os << resetTime;
-//    }
-//    return true;
-//}
-//
-//
-//void NetMsgTimeTrial::onMessageArrived() {
-//    GLViewSpeedRacer* glView = dynamic_cast<GLViewSpeedRacer*>(ManagerGLView::getGLView());
-//    if (glView) {
-//        switch (action) {
-//        case START:
-//            glView->startTimer();
-//            break;
-//        case PAUSE:
-//            glView->pauseTimer();
-//            break;
-//        case RESET:
-//            glView->resetTimer(resetTime);
-//            break;
-//        }
-//    }
-//}
-//
+#pragma once
+
+#include "NetMsg.h"
+#include "GLViewSpeedRacer.h"
+#include "ManagerGLView.h"
+#include "NetMessengerStreamBuffer.h"
+#include "NetMsgMacroMethods.h"
+#include "NetMsgAudio.h"
+
+
+using namespace Aftr;
+
+NetMsgMacroDefinition(NetMsgTimerControl);
+ 
+NetMsgTimerControl::NetMsgTimerControl()
+    : NetMsg(), isTimerRunning(false) {}
+
+NetMsgTimerControl::~NetMsgTimerControl() {}
+
+bool NetMsgTimerControl::toStream(NetMessengerStreamBuffer& os) const {
+    // Convert bool to int for streaming
+    os << (isTimerRunning ? 1 : 0);
+    return true;
+}
+
+
+bool NetMsgTimerControl::fromStream(NetMessengerStreamBuffer& is) {
+    int temp;
+    // Read as int and then convert to bool
+    is >> temp;
+    isTimerRunning = (temp != 0);
+    return true;
+}
+
+void NetMsgTimerControl::onMessageArrived() {
+    GLViewSpeedRacer* glView = dynamic_cast<GLViewSpeedRacer*>(ManagerGLView::getGLView());
+    if (glView) {
+        // Update the timer state in the receiving instance
+        if (isTimerRunning) {
+            glView->timerStartTime = SDL_GetTicks();
+            glView->isTimerRunning = true;
+            glView->pausedTime = 0;
+        }
+        else {
+            glView->pausedTime = SDL_GetTicks() - glView->timerStartTime;
+            glView->isTimerRunning = false;
+        }
+    }
+}
+
