@@ -104,8 +104,7 @@ void Car::setCarPose(Aftr::Mat4 pose)
     *positionInfo = this->getPosition();
 }
 
-void Car::updatePoseFromPhysicsEngine()
-{
+void Car::updatePoseFromPhysicsEngine() {
     if (this && pxRigidDynamic) {
         if (pxRigidDynamic->isSleeping()) {
             pxRigidDynamic->wakeUp();
@@ -188,7 +187,6 @@ physx::PxVec3 Car::getForwardVector() const {
     return physx::PxVec3(0, 0, 0);
 }
 // Implementation of setSpeed
-// Implementation of setSpeed
 void Car::setSpeed(float speed) {
     this->currentSpeed = speed;
     if (this->pxRigidDynamic) {
@@ -199,8 +197,6 @@ void Car::setSpeed(float speed) {
 }
 
 void Car::setPhysicsQuality(float quality) {
-    // Adjust physics properties based on the quality value
-    // For example, change friction, mass, or damping
     float adjustedFriction = 1.0f - (quality * 0.5f); // Adjust friction based on quality
     float adjustedMass = 100.0f * quality; // Example adjustment for mass
 
@@ -208,6 +204,7 @@ void Car::setPhysicsQuality(float quality) {
     physx::PxRigidDynamic* rigidBody = getRigidDynamic();
     if (rigidBody) {
         rigidBody->setMass(adjustedMass);
+        rigidBody->setMassSpaceInertiaTensor(adjustedMass * physx::PxVec3(1, 1, 1)); // Example adjustment
         // Apply other physics adjustments as needed
     }
 }

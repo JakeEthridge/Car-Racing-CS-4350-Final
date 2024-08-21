@@ -213,7 +213,7 @@ namespace Aftr {
             delete[] dynamicActors;
         }
 
-        updateControls();
+        updateCamera();
 
         auto timeNow = std::chrono::high_resolution_clock::now();
         auto retryAfter = std::chrono::duration_cast<std::chrono::seconds>(timeNow - tcpRetry).count();
@@ -262,18 +262,6 @@ namespace Aftr {
 
     void GLViewSpeedRacer::onKeyDown(const SDL_KeyboardEvent& key) {
         GLView::onKeyDown(key);
-        Car* currentCar = nullptr;
-
-        // Determine the currently active car model
-        switch (selectedCarModel) {
-        case CAR_MODEL_DODGE:
-            currentCar = carDodge;
-            break;
-        case CAR_MODEL_FORD:
-            currentCar = carFord;
-            break;
-            // Add cases for additional models if needed
-        }
        
         // Handle car visibility and position based on key presses
         if (key.keysym.sym == SDLK_DOWN) {
@@ -557,10 +545,7 @@ namespace Aftr {
                 std::cout << "Player 1 Wins!" << std::endl;
             }
         }
-        // Handle Enter key press
-        if (key.keysym.sym == SDLK_RETURN) {
-            respawnSelectedCar();
-        }
+
         if (key.keysym.sym == SDLK_m) {
             soundEngine->stopAllSounds();
         }
@@ -649,10 +634,6 @@ namespace Aftr {
             // Handle error
         }
 
-        // Load the collision sound
-      /*  irrklang::ISoundSource* collisionSoundPath = soundEngine->addSoundSourceFromFile((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Collision.wav").c_str());
-        soundEngine->addSoundSourceAlias(collisionSoundPath, "collision");
-        soundList.push_back("collision");*/
 
         spawnPlayer1();
         OtherCarSkin1();
@@ -661,20 +642,6 @@ namespace Aftr {
 
         spawnPlayer2();
         hideAllCars2();
-
-        // Default song
-        //engine->play2D("../../../modules/SpeedRacer/mm/sounds/ride.mp3", true);
-
-        // Add sound sources for grid terrain functions
-        irrklang::ISoundSource* gridTerrainSound = soundEngine->addSoundSourceFromFile((ManagerEnvironmentConfiguration::getLMM() + "/sounds/nature.wav").c_str());
-        soundEngine->addSoundSourceAlias(gridTerrainSound, "gridTerrainSound");
-        soundList.push_back("gridTerrainSound");
-
-        irrklang::ISoundSource* anotherGridTerrainSound = soundEngine->addSoundSourceFromFile((ManagerEnvironmentConfiguration::getLMM() + "/sounds/").c_str());
-        soundEngine->addSoundSourceAlias(anotherGridTerrainSound, "anotherGridTerrainSound");
-        soundList.push_back("anotherGridTerrainSound");
-
-
 
         // Initialize SDL_image
         IMG_Init(IMG_INIT_PNG);
@@ -721,24 +688,45 @@ namespace Aftr {
         gui->setLabel("Switch Terrain");
         gui->subscribe_drawImGuiWidget([this, gui]() {
 
-            // Get the size of the display
             ImVec2 displaySize = ImGui::GetIO().DisplaySize;
+
+            // Set the darker blue theme colors for the ImGui menu
+            ImGuiStyle& style = ImGui::GetStyle();
+            style.Colors[ImGuiCol_WindowBg] = ImVec4(0.0f, 0.0f, 0.3f, 1.0f); // Darker blue background
+            style.Colors[ImGuiCol_Button] = ImVec4(0.0f, 0.0f, 0.0f, 1.0f); // Black buttons
+            style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.2f, 0.2f, 0.2f, 1.0f); // Dark gray hover for buttons
+            style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.1f, 0.1f, 0.1f, 1.0f); // Lighter black when the button is active
+            style.Colors[ImGuiCol_Text] = ImVec4(1.0f, 1.0f, 1.0f, 1.0f); // White text
 
             // Calculate the elapsed time since the loading started
             Uint32 currentTime = SDL_GetTicks();
             Uint32 elapsedTime = currentTime - loadingStartTime;
             float volumeLevel = 0.0f; // Volume starts at zero
+
             // Handle the different game states
             if (gameState == START_SCREEN) {
                 // Show start screen
                 ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
                 ImGui::SetNextWindowSize(ImVec2(displaySize.x, displaySize.y), ImGuiCond_Always);
                 ImGui::Begin("Start Game", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+
                 // Set the font size larger for the "SpeedRacer" text
+// Set the font size larger for the "SpeedRacer" text
                 ImGui::SetCursorPos(ImVec2(displaySize.x / 2.0f - 50.0f, displaySize.y - 500.0f)); // Adjust Y value as needed for spacing
+
                 ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]); // Assuming you have a larger font loaded in index 1
-                ImGui::Text("    SpeedRacer");
+
+                // Scale the text to make it larger
+                ImGui::SetWindowFontScale(2.0f); // Scale the font size (2.0f makes it twice as large)
+
+                // Display the "SpeedRacer" text
+                ImGui::Text("SpeedRacer");
+
+                // Reset the font scaling back to normal
+                ImGui::SetWindowFontScale(1.0f);
+
                 ImGui::PopFont();
+
 
                 // Display the start image
                 if (startImage) {
@@ -753,17 +741,15 @@ namespace Aftr {
                 ImGui::SetCursorPos(ImVec2(displaySize.x / 2.0f - 60.0f, displaySize.y - 80.0f)); // Adjust these values as needed
 
                 // Set a smaller width for the volume slider
-                ImGui::PushItemWidth(250.0f); // Set the slider width to 150 pixels
+                ImGui::PushItemWidth(250.0f); // Set the slider width to 250 pixels
                 ImGui::SliderFloat("Volume", &volumeLevel, 0.0f, 1.0f); // Slider to control volume
                 ImGui::PopItemWidth();
+
                 // Position the "Toggle Network Messaging" button below the volume slider
                 ImGui::SetCursorPos(ImVec2(displaySize.x / 2.0f - 40.0f, displaySize.y - 60.0f)); // Adjust to position below the slider
-                // Button to toggle network messaging between Single Player and Multiplayer
 
-          
-
-   // Set the button width and height
-                ImVec2 buttonSize(225, 0); // Width: 150, Height: 30 (adjust as needed)
+                // Set the button width and height
+                ImVec2 buttonSize(225, 0); // Width: 225, Height: 30 (adjust as needed)
 
                 // Button to toggle network messaging between Single Player and Multiplayer
                 if (isNetworkEnabled) {
@@ -777,16 +763,16 @@ namespace Aftr {
                     }
                 }
 
-
-
                 // Display the current state of the network messaging below the button
                 ImGui::SetCursorPos(ImVec2(displaySize.x / 2.0f - 40.0f, displaySize.y - 40.0f)); // Adjust to position below the button
                 ImGui::Text("  Network Messaging: %s", isNetworkEnabled ? "Enabled" : "Disabled");
+
                 if (startScreenSoundtrack) {
                     startScreenSoundtrack->setVolume(volumeLevel); // Update volume based on slider value
                 }
 
                 ImGui::End();
+            
 
                 // Check if the space bar is pressed
                 const Uint8* state = SDL_GetKeyboardState(nullptr);
@@ -797,6 +783,7 @@ namespace Aftr {
                     NetMsgStartToLoading msg;
                     client->sendNetMsgSynchronousTCP(msg);
                 }
+
 
                 return; // Skip the rest of the update while in the start screen
             }
@@ -1003,16 +990,6 @@ namespace Aftr {
             ImGui::Separator();
             if (ImGui::CollapsingHeader("Player 1 Controls")) {
 
-                //if (ImGui::Button("Select Player1")) {
-                //    this->spawnPlayer1();
-
-                //    // Send network message to spawn Player1 in another instance
-                //    if (client) {
-                //        NetMsgSpawnCarPlayers msg;
-                //        msg.carType = "Player1";
-                //        client->sendNetMsgSynchronousTCP(msg);
-                //    }
-                //}
 
                 // Define the available car skins
                 static const char* carSkins[] = { "Dodge", "Ford", "Sports Car", "CyberTrunk" };
@@ -1263,6 +1240,18 @@ namespace Aftr {
                     }
                 }
             }
+            // Slider for controlling physics quality
+            ImGui::SliderFloat("Physics Quality", &physicsQuality, 0.0f, 1.0f, "%.2f");
+
+            // Update all car instances with the new physics quality
+            Car* cars[] = { car_test, car_turn, car_other_side, car_new,
+                            carMain, carRight, carLeft, carDown };
+
+            for (Car* car : cars) {
+                if (car) {
+                    car->setPhysicsQuality(physicsQuality);
+                }
+            }
 
             ImGui::Separator();
 
@@ -1303,23 +1292,12 @@ namespace Aftr {
         if (useAnotherGrid) {
             createAnotherGrid();
             switchSkyBox(1); // Switch to the second skybox
-            anotherGridTerrainFunction(); // Play another grid terrain sound
         }
         else {
             createGrid();
-            gridTerrainFunction();
             switchSkyBox(0); // Switch to the first skybox
         }
 
-    }
-
-    void GLViewSpeedRacer::gridTerrainFunction() {
-        // Implementation of the grid terrain function
-        soundEngine->play2D("gridTerrainSound", true); // Play in loop
-    }
-    void GLViewSpeedRacer::anotherGridTerrainFunction() {
-        // Implementation of the another grid terrain function
-        soundEngine->play2D("anotherGridTerrainSound", true); // Play in loop
     }
     void GLViewSpeedRacer::createGrid()
     {
@@ -1472,11 +1450,14 @@ namespace Aftr {
 
     void GLViewSpeedRacer::spawnPlayer1() {
         std::string Car_Ups = ManagerEnvironmentConfiguration::getLMM() + "/models/CarDodgeRight.fbx";
-        std::string Car_Rights = ManagerEnvironmentConfiguration::getLMM() + "models/CarDogde.fbx";
+        std::string Car_Rights = ManagerEnvironmentConfiguration::getLMM() + "/models/CarDogde.fbx";
         std::string Car_Lefts = ManagerEnvironmentConfiguration::getLMM() + "/models/CarDodgeDown.fbx";
         std::string Car_Downs = ManagerEnvironmentConfiguration::getLMM() + "/models/CarDodgeNew.fbx"; // New car model path
+        std::string fallbackModel = ManagerEnvironmentConfiguration::getLMM() + "/models/DefaultCar.fbx";
+        int retryLimit = 3;
 
         car_test = Car::New(Car_Ups, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
+        car_test = tryLoadCarModel(Car_Ups, fallbackModel, retryLimit);
         car_test->setPos(Vector(0, 0, 0));
         car_test->setPose(spy_pose);
         car_test->rotateAboutGlobalZ(-4.60f);
@@ -1484,7 +1465,9 @@ namespace Aftr {
         car_test->isVisible = false;
         worldLst->push_back(car_test);
 
+
         car_turn = Car::New(Car_Rights, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
+        car_turn = tryLoadCarModel(Car_Rights, fallbackModel, retryLimit);
         car_turn->setPos(Vector(0, 0, 5));
         car_turn->setPose(spy_pose);
         car_turn->rotateAboutGlobalZ(-4.60f);
@@ -1500,6 +1483,7 @@ namespace Aftr {
         car_other_side->isVisible = false;
         worldLst->push_back(car_other_side);
 
+        car_turn = tryLoadCarModel(Car_Rights, fallbackModel, retryLimit);
         car_new = Car::New(Car_Downs, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
         car_new->setPos(Vector(0, 0, 5)); // Adjust the position as needed
         car_new->setPose(spy_pose);
@@ -1515,11 +1499,40 @@ namespace Aftr {
         car1->isVisible = true;
         car1->setLabel("car1");
         worldLst->push_back(car1);
+    }
+    // Function to load car model with retry and fallback mechanism
+    Car* GLViewSpeedRacer::tryLoadCarModel(const std::string& modelPath, const std::string& fallbackModelPath, int retryLimit) {
+        Car* car = nullptr;
+        int retries = 0;
 
+        while (retries < retryLimit) {
+            car = Car::New(modelPath, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
+            if (car != nullptr) {
+                return car; // Successfully loaded model
+            }
+            retries++;
+        }
 
+        // If failed after retries, load the fallback model
+        car = Car::New(fallbackModelPath, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
+        return car;
+    }
+    // Function to load WO model (if needed)
+    WO* GLViewSpeedRacer::tryLoadWOModel(const std::string& modelPath, const std::string& fallbackModelPath, int retryLimit) {
+        WO* wo = nullptr;
+        int retries = 0;
 
+        while (retries < retryLimit) {
+            wo = WO::New(modelPath, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT);
+            if (wo != nullptr) {
+                return wo; // Successfully loaded model
+            }
+            retries++;
+        }
 
-
+        // If failed after retries, load the fallback model
+        wo = WO::New(fallbackModelPath, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT);
+        return wo;
     }
     void GLViewSpeedRacer::OtherCarSkin1() {
         std::string Car_Up = ManagerEnvironmentConfiguration::getLMM() + "/models/ford/FordCarDirection.dae";
@@ -1664,7 +1677,7 @@ namespace Aftr {
     void GLViewSpeedRacer::spawnPlayer2() {
 
         std::string carModelUp = ManagerEnvironmentConfiguration::getLMM() + "/models/CarDodgeRight.fbx";
-        std::string carModelRight = ManagerEnvironmentConfiguration::getLMM() + "models/CarDogde.fbx";
+        std::string carModelRight = ManagerEnvironmentConfiguration::getLMM() + "/models/CarDogde.fbx";
         std::string carModelLeft = ManagerEnvironmentConfiguration::getLMM() + "/models/CarDodgeDown.fbx";
         std::string carModelDown = ManagerEnvironmentConfiguration::getLMM() + "/models/CarDodgeNew.fbx";
 
@@ -1862,31 +1875,6 @@ namespace Aftr {
         worldLst->push_back(car2);
     }
 
-
-    void GLViewSpeedRacer::setCarSpeed(float speed) {
-        car_test->setSpeed(speed);
-        car_turn->setSpeed(speed);
-        car_other_side->setSpeed(speed);
-        car_new->setSpeed(speed);
-        carMain->setSpeed(speed);
-        carRight->setSpeed(speed);
-        carLeft->setSpeed(speed);
-        carDown->setSpeed(speed);
-    }
-
-
-    void GLViewSpeedRacer::loadAssets() {
-        isLoading = true;
-
-        // Simulate asset loading with a sleep (replace with actual asset loading)
-        SDL_Delay(2000); // Simulate a 2-second loading time
-
-        // Load your assets here
-        // Example: load textures, models, sounds, etc.
-
-        isAssetsLoaded = true;
-        isLoading = false;
-    }
     SDL_Texture* GLViewSpeedRacer::loadTexture(const std::string& path) {
         SDL_Surface* surface = IMG_Load(path.c_str());
         if (!surface) {
@@ -1902,9 +1890,6 @@ namespace Aftr {
         }
 
         return texture;
-    }
-    bool GLViewSpeedRacer::isTerrainLoaded() {
-        return terrain1Loaded || terrain2Loaded;
     }
     void GLViewSpeedRacer::resetCarPosition() {
         // Set the car's position to the initial position
@@ -1934,7 +1919,7 @@ namespace Aftr {
     {
         active_keys[keycode] = state;
     }
-    void GLViewSpeedRacer::updateControls()
+    void GLViewSpeedRacer::updateCamera()
     {
         if (active_keys[SDLK_1])
         {
@@ -1973,8 +1958,6 @@ namespace Aftr {
 
 
     }
-
-
     void GLViewSpeedRacer::sendTerrainChangeMessage(bool useAnotherGrid, float moveDownAmount, float rotateAmount, float moveNegativeXAmount, float movePositiveXAmount) {
         if (!isNetworkEnabled) {
             return;
@@ -1997,64 +1980,8 @@ namespace Aftr {
             client->sendNetMsgSynchronousTCP(terrainLoadedMsg);
         }
     }
-
-
-    void GLViewSpeedRacer::handleCarMovement(int carModel, int keyPress, float moveAmount) {
-        Car* currentCar = nullptr;
-
-        switch (carModel) {
-        case CAR_MODEL_DODGE:
-            currentCar = carDodge;
-            break;
-        case CAR_MODEL_FORD:
-            currentCar = carFord;
-            break;
-            // Add cases for additional models if needed
-        }
-
-        if (!currentCar) return;
-        //
-        // Handle car visibility and position based on key presses
-        switch (keyPress) {
-        case SDLK_DOWN:
-            soundEngine->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Driving.wav").c_str(), true);
-            currentCar->isVisible = true;
-            // Apply movement
-            {
-                physx::PxVec3 rightVector = currentCar->getRigidDynamic()->getGlobalPose().q.rotate(physx::PxVec3(1, 0, 0));
-                physx::PxVec3 newPos = currentCar->getRigidDynamic()->getGlobalPose().p + rightVector * moveAmount * -1.0f;
-                currentCar->setPos(Aftr::Vector(newPos.x, newPos.y, newPos.z));
-            }
-            break;
-        case SDLK_UP:
-            soundEngine->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Driving.wav").c_str(), true);
-            currentCar->isVisible = false;
-            // Apply movement
-            {
-                physx::PxVec3 rightVector = currentCar->getRigidDynamic()->getGlobalPose().q.rotate(physx::PxVec3(1, 0, 0));
-                physx::PxVec3 newPos = currentCar->getRigidDynamic()->getGlobalPose().p + rightVector * moveAmount;
-                currentCar->setPos(Aftr::Vector(newPos.x, newPos.y, newPos.z));
-            }
-            break;
-        case SDLK_LEFT:
-            soundEngine->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Driving.wav").c_str(), true);
-            // Apply movement
-            {
-                physx::PxVec3 forward = currentCar->getForwardVector();
-                physx::PxVec3 newPos = currentCar->getRigidDynamic()->getGlobalPose().p + forward * moveAmount;
-                currentCar->setPos(Aftr::Vector(newPos.x, newPos.y, newPos.z));
-            }
-            break;
-        case SDLK_RIGHT:
-            soundEngine->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Driving.wav").c_str(), true);
-            // Apply movement
-            {
-                physx::PxVec3 forward = currentCar->getForwardVector();
-                physx::PxVec3 newPos = currentCar->getRigidDynamic()->getGlobalPose().p + forward * moveAmount * -1.0f;
-                currentCar->setPos(Aftr::Vector(newPos.x, newPos.y, newPos.z));
-            }
-            break;
-        }
+    bool GLViewSpeedRacer::isTerrainLoaded() {
+        return terrain1Loaded || terrain2Loaded;
     }
     void GLViewSpeedRacer::hideAllCars() {
         if (car_test) car_test->isVisible = false;
@@ -2077,43 +2004,5 @@ namespace Aftr {
         loadingStartTime = SDL_GetTicks();
         isLoading = true;
 
-        // Additional logic for handling the loading process
     }
-    void GLViewSpeedRacer::respawnSelectedCar() {
-        // Determine which car skin is currently selected
-        std::string skinType;
-        switch (selectedSkin) {
-        case 0: skinType = "Dodge"; break;
-        case 1: skinType = "Ford"; break;
-        case 2: skinType = "Sports Car"; break;
-        case 3: skinType = "CyberTrunk"; break;
-        }
-
-        // Respawn the selected car
-        if (skinType == "Dodge") {
-            hideAllCars();
-            this->spawnPlayer1(); // Respawn Dodge skin
-        }
-        else if (skinType == "Ford") {
-            hideAllCars();
-            this->OtherCarSkin1(); // Respawn Ford skin
-        }
-        else if (skinType == "Sports Car") {
-            hideAllCars();
-            this->OtherCarSkin2(); // Respawn Sports Car skin
-        }
-        else if (skinType == "CyberTrunk") {
-            hideAllCars();
-            this->OtherCarSkin3(); // Respawn CyberTrunk skin
-        }
-
-        // Send network message to respawn car in other instances
-        if (client) {
-            NetMsgChangeCarSkin msg;
-            msg.skinType = skinType;
-            msg.player = "Player1";
-            client->sendNetMsgSynchronousTCP(msg);
-        }
-    }
-
 }

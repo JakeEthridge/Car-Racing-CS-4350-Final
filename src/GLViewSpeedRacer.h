@@ -49,36 +49,24 @@ namespace Aftr
         virtual void switchSkyBox(int index);
         virtual void switchTerrain(bool useAnotherGrid);
         virtual void updateActiveKeys(SDL_KeyCode keycode, bool state);
-        void gridTerrainFunction();
-        void anotherGridTerrainFunction();
         void moveTerrainNegativeX(float amount);
         void moveTerrainUp(float amount);
         void moveTerrainDown(float amount);
         void rotateTerrain(float angle);
-        void setCarSpeed(float speed);
-        void loadAssets();
-        void updateControls();
+        void updateCamera();
         void OtherCarSkin1();
         void OtherCarSkin2();
         void OtherCarSkin3();
         void sendTerrainChangeMessage(bool useAnotherGrid, float moveDownAmount, float rotateAmount, float moveNegativeXAmount, float movePostiveXAmount);
-        void handleCarMovement(int carModel, int keyPress, float moveAmount);
         void moveTerrainPositiveX(float amount);
         void spawnPlayer2Skin1();
         void spawnPlayer2Skin2();
         void spawnPlayer2Skin3();
         void hideAllCars();
         void hideAllCars2();
-        void respawnSelectedCar();
-
-        bool otherInstanceTerrainLoaded = false; // New variable to track terrain loading in the other instance
-        void handleTerrainLoading() {
-            if (isTerrainLoaded() && otherInstanceTerrainLoaded) {
-                // Transition to the main GUI after terrain is loaded in both instances
-                gameState = MAIN_GUI;
-                isLoading = false;
-            }
-        }
+        void startLoadingProcess();
+        Car* tryLoadCarModel(const std::string& modelPath, const std::string& fallbackModelPath, int retryLimit);
+        WO* tryLoadWOModel(const std::string& modelPath, const std::string& fallbackModelPath, int retryLimit);
         Car* getVisibleCar1() {
             if (car_test && car_test->isVisible) return car_test;
             if (car_turn && car_turn->isVisible) return car_turn;
@@ -96,25 +84,9 @@ namespace Aftr
             if (carDown && carDown->isVisible) return carDown;
             return nullptr;
         }
-        void loadTerrainAsync() {
-            // Perform terrain loading here (e.g., switchTerrain and transformations)
-            this->switchTerrain(true);
-            this->moveTerrainDown(90.0f);
-            this->rotateTerrain(-0.261799f * 6);
-            this->moveTerrainNegativeX(50.0f * 11);
-            this->moveTerrainPositiveX(40.0f);
-
-            // Once the terrain is loaded, update the game state
-            terrain1Loaded = true;
-            terrainGridLoaded = true;
-            isLoading = false;
-        }
-
-        void startLoadingProcess();
         bool isNetworkEnabled; // Flag to enable/disable network messaging
         bool followCar1; // Add this member variable to track the current car group
-        // Initialize the static member
-        //bool isMuted = false;
+
         // Cars1
         Car* followModelCar;
         WO* car1;
@@ -131,24 +103,11 @@ namespace Aftr
         Car* carRight;
         Car* carLeft;
         Car* carDown;
+     
         int selectedSkin = 0; // Default value or initialize as needed
         // Simple linear interpolation function
         float lerp(float a, float b, float t) {
             return a + t * (b - a);
-        }
-        void setGravityEnabled(bool enabled) {
-            if (enabled) {
-                car_test->getRigidDynamic()->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, false);  // Enable gravity
-                car_turn->getRigidDynamic()->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, false);
-                car_other_side->getRigidDynamic()->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, false);
-                car_new->getRigidDynamic()->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, false);
-            }
-            else {
-                car_test->getRigidDynamic()->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, true);  // Disable gravity
-                car_turn->getRigidDynamic()->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, true);
-                car_other_side->getRigidDynamic()->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, true);
-                car_new->getRigidDynamic()->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, true);
-            }
         }
         irrklang::ISoundEngine* soundEngine = irrklang::createIrrKlangDevice();
         irrklang::ISoundEngine* drivingSound = irrklang::createIrrKlangDevice();
@@ -165,7 +124,7 @@ namespace Aftr
          bool isFullSize = true;
          float physicsQuality = 1.0f; // Default to the highest quality
          bool terrainGridLoaded = false; // Add this in your class definition
-
+         bool otherInstanceTerrainLoaded = false; // New variable to track terrain loading in the other instance
     protected:
         GLViewSpeedRacer(const std::vector<std::string>& args, physx::PxPhysics* pxPhysics, physx::PxScene* pxScene);
         virtual void onCreate();
@@ -175,11 +134,9 @@ namespace Aftr
         Uint32 spacePressTime = 0;
         const Uint32 SPACE_PRESS_DELAY = 2000; // 3 seconds
         float volume = 1;
-
         physx::PxPhysics* pxPhysics = nullptr;
         physx::PxScene* pxScene = nullptr;
         Mat4 spy_pose;
-
         float timer;       // Timer to track elapsed time
         Aftr::Vector initialCarPosition; // Initial position of the car
         // Collision detection
@@ -192,11 +149,6 @@ namespace Aftr
         std::vector<Car*> cars; // Vector of car pointers
         std::vector<Car*> spawnedCars; // Vector to keep track of spawned car objects
         Car* selectedCar = nullptr; // Pointer to the currently selected car
-
-        // Variables for collision detection
-       
-
-       
         std::unordered_map<WO*, irrklang::ISoundSource*> defaultSounds;
         std::vector<std::string> soundList;
         std::map<SDL_KeyCode, bool> active_keys;
@@ -249,19 +201,6 @@ namespace Aftr
         static Uint32 secondLeftKeyPressTime;
         static bool updateLapPending;
         int currentSkinPlayer2 = -1; // Initialize with an invalid value to indicate no skin is currently active
-
-
-
-       
-        enum CarModel {
-            CAR_MODEL_DODGE,
-            CAR_MODEL_FORD,
-            // Add more models if needed
-        };
-
-        CarModel selectedCarModel = CAR_MODEL_DODGE; // Default model
-        Car* carDodge = nullptr;
-        Car* carFord = nullptr;
 
     };
 
