@@ -28,7 +28,7 @@ public:
     physx::PxRigidDynamic* getRigidDynamic() const { return pxRigidDynamic; }
     physx::PxRigidDynamic* pxRigidDynamic = nullptr;
     void setSpeed(float speed);
-   
+    void setPhysicsQuality(float quality);
    
 
 protected:

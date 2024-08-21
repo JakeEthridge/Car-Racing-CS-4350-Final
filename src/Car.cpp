@@ -198,3 +198,16 @@ void Car::setSpeed(float speed) {
     }
 }
 
+void Car::setPhysicsQuality(float quality) {
+    // Adjust physics properties based on the quality value
+    // For example, change friction, mass, or damping
+    float adjustedFriction = 1.0f - (quality * 0.5f); // Adjust friction based on quality
+    float adjustedMass = 100.0f * quality; // Example adjustment for mass
+
+    // Apply these adjustments to the car's physics properties
+    physx::PxRigidDynamic* rigidBody = getRigidDynamic();
+    if (rigidBody) {
+        rigidBody->setMass(adjustedMass);
+        // Apply other physics adjustments as needed
+    }
+}
