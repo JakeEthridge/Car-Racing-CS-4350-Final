@@ -64,6 +64,7 @@ namespace Aftr
         void spawnPlayer2Skin3();
         void hideAllCars();
         void hideAllCars2();
+        void hideAllCarObjects();
         void startLoadingProcess();
 
         Car* getVisibleCar1() {

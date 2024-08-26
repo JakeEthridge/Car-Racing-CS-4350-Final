@@ -277,6 +277,7 @@ namespace Aftr {
        
         // Handle car visibility and position based on key presses
         if (key.keysym.sym == SDLK_DOWN) {
+            drivingSound->setSoundVolume(0.01f);
             drivingSound->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Driving.wav").c_str(), true);
             car_test->isVisible = true;
             car_turn->isVisible = false;
@@ -307,6 +308,7 @@ namespace Aftr {
         }
 
         if (key.keysym.sym == SDLK_UP) {
+            drivingSound->setSoundVolume(0.01f);
             drivingSound->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Driving.wav").c_str(), true);
             car_test->isVisible = false;
             car_turn->isVisible = false;
@@ -338,6 +340,7 @@ namespace Aftr {
         if (key.keysym.sym == SDLK_LEFT) {
             car1->setPosition(Vector(0, 0, -20));
             car3->setPosition(Vector(0, 0, -20));
+            drivingSound->setSoundVolume(0.01f);
             drivingSound->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Driving.wav").c_str(), true);
             car_test->isVisible = false;
             car_turn->isVisible = false;
@@ -371,6 +374,7 @@ namespace Aftr {
         }
 
         if (key.keysym.sym == SDLK_RIGHT) {
+            drivingSound->setSoundVolume(0.01f);
             drivingSound->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Driving.wav").c_str(), true);
             car_test->isVisible = false;
             car_turn->isVisible = true;
@@ -401,6 +405,7 @@ namespace Aftr {
 
         // Handle car visibility and position based on key presses
         if (key.keysym.sym == SDLK_s) { // Down arrow key
+            drivingSound->setSoundVolume(0.01f);
             drivingSound->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Driving.wav").c_str(), true);
             carMain->isVisible = true;
             carRight->isVisible = false;
@@ -430,6 +435,7 @@ namespace Aftr {
         }
 
         if (key.keysym.sym == SDLK_w) { // Up arrow key
+            drivingSound->setSoundVolume(0.01f);
             drivingSound->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Driving.wav").c_str(), true);
             carMain->isVisible = false;
             carRight->isVisible = false;
@@ -460,6 +466,7 @@ namespace Aftr {
 
         if (key.keysym.sym == SDLK_a) { // Left arrow key
             car2->setPosition(Vector(0, 0, -20));
+            drivingSound->setSoundVolume(0.01f);
             drivingSound->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Driving.wav").c_str(), true);
             carMain->isVisible = false;
             carRight->isVisible = false;
@@ -490,6 +497,7 @@ namespace Aftr {
         }
 
         if (key.keysym.sym == SDLK_d) { // Right arrow key
+            drivingSound->setSoundVolume(0.01f);
             drivingSound->play2D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Driving.wav").c_str(), true);
             carMain->isVisible = false;
             carRight->isVisible = true;
@@ -663,26 +671,7 @@ namespace Aftr {
         car2->isVisible = false;
         hideAllCars2();
 
-        // Initialize SDL_image
-        IMG_Init(IMG_INIT_PNG);
 
-        // Load images using ManagerEnvironmentConfiguration::getLMM() path
-        std::string basePath = ManagerEnvironmentConfiguration::getLMM() + "/images/";
-        std::string startImagePath = basePath + "start_images.png";
-        std::string loadingImagePath = basePath + "loading_images.png";
-        // Load images from library
-        //std::string startImagePath = "../../../modules/SpeedRacer/mm/images/start_image.png";
-        //std::string loadingImagePath = "../../../modules/SpeedRacer/mm/images/loading_image.png";
-
-        startImage = loadTexture(startImagePath);
-        if (!startImage) {
-            printf("Failed to load start image from path: %s\n", startImagePath.c_str());
-        }
-
-        loadingImage = loadTexture(loadingImagePath);
-        if (!loadingImage) {
-            printf("Failed to load loading image from path: %s\n", loadingImagePath.c_str());
-        }
 
         // Load and play the start screen soundtrack
         startScreenSoundtrack = soundEngine->play2D(
@@ -738,7 +727,7 @@ namespace Aftr {
                 // Scale the text to make it larger
                 ImGui::SetWindowFontScale(2.0f);
 
-                // Display the "SpeedRacer" text
+               
                 ImGui::Text("SpeedRacer");
 
                 // Reset the font scaling back to normal
@@ -903,9 +892,10 @@ namespace Aftr {
                     float elapsedTime = (SDL_GetTicks() - timerStartTime) / 1000.0f;
                     ImGui::Text("Timer: %.2f seconds", elapsedTime);
 
-                    // Check if the elapsed time exceeds resetTime (in seconds)
+                    // Check if the elapsed time exceeds resetTime
                     if (elapsedTime > resetTime) {
                         resetCarPosition();
+
 
                         // Reset the timer start time
                         timerStartTime = SDL_GetTicks();
@@ -1387,11 +1377,11 @@ namespace Aftr {
         // Create a new skybox based on the index
         if (index == 0)
         {
-            worldLst->push_back(WOSkyBox::New(ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_afternoon+6.jpg", this->getCameraPtrPtr()));
+            worldLst->push_back(WOSkyBox::New(ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_morning+6.jpg", this->getCameraPtrPtr()));
         }
         else if (index == 1)
         {
-            worldLst->push_back(WOSkyBox::New(ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_morning+6.jpg", this->getCameraPtrPtr()));
+            worldLst->push_back(WOSkyBox::New(ManagerEnvironmentConfiguration::getSMM() + "/images/skyboxes/sky_afternoon+6.jpg", this->getCameraPtrPtr()));
         }
     }
     void GLViewSpeedRacer::rotateTerrain(float angle) {
@@ -1450,12 +1440,12 @@ namespace Aftr {
     }
 
     void GLViewSpeedRacer::spawnPlayer1() {
-        std::string Car_Ups = ManagerEnvironmentConfiguration::getLMM() + "/models/Dodge/CarDodgeRight.fbx";
-        std::string Car_Rights = ManagerEnvironmentConfiguration::getLMM() + "/models/Dodge/CarDogde.fbx";
-        std::string Car_Lefts = ManagerEnvironmentConfiguration::getLMM() + "/models/Dodge/CarDodgeDown.fbx";
-        std::string Car_Downs = ManagerEnvironmentConfiguration::getLMM() + "/models/Dodge/CarDodgeNew.fbx"; // New car model path
-        
-        car_test = Car::New(Car_Ups, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
+        std::string Car_Up(ManagerEnvironmentConfiguration::getLMM() + "/models/Dodge/CarDodgeRight.fbx");
+        std::string Car_Right(ManagerEnvironmentConfiguration::getLMM() + "/models/Dodge/CarDogde.fbx");
+        std::string Car_Left(ManagerEnvironmentConfiguration::getLMM() + "/models/Dodge/CarDodgeDown.fbx");
+        std::string Car_Down(ManagerEnvironmentConfiguration::getLMM() + "/models/Dodge/CarDodgeNew.fbx"); // New car model path
+        std::string Car11(ManagerEnvironmentConfiguration::getLMM() + "/models/Dodge/CarDodgeNew.fbx");
+        car_test = Car::New(Car_Up, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
         car_test->setPos(Vector(0, 0, 0));
         car_test->setPose(spy_pose);
         car_test->rotateAboutGlobalZ(-4.60f);
@@ -1464,7 +1454,7 @@ namespace Aftr {
         worldLst->push_back(car_test);
 
 
-        car_turn = Car::New(Car_Rights, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
+        car_turn = Car::New(Car_Right, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
         car_turn->setPos(Vector(0, 0, 5));
         car_turn->setPose(spy_pose);
         car_turn->rotateAboutGlobalZ(-4.60f);
@@ -1472,7 +1462,7 @@ namespace Aftr {
         car_turn->isVisible = false;
         worldLst->push_back(car_turn);
 
-        car_other_side = Car::New(Car_Lefts, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
+        car_other_side = Car::New(Car_Left, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
         car_other_side->setPos(Vector(0, 0, 5)); // Adjust the position to be on the other side of car_test
         car_other_side->setPose(spy_pose);
         car_other_side->rotateAboutGlobalZ(-4.60f);
@@ -1480,7 +1470,7 @@ namespace Aftr {
         car_other_side->isVisible = false;
         worldLst->push_back(car_other_side);
 
-        car_new = Car::New(Car_Downs, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
+        car_new = Car::New(Car_Down, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
         car_new->setPos(Vector(0, 0, 5)); // Adjust the position as needed
         car_new->setPose(spy_pose);
         car_new->rotateAboutGlobalZ(-4.60f);
@@ -1488,7 +1478,7 @@ namespace Aftr {
         car_new->isVisible = false;
         worldLst->push_back(car_new);
 
-        std::string Car11 = ManagerEnvironmentConfiguration::getLMM() + "/models/Dodge/CarDodgeNew.fbx";
+      
         car1 = WO::New(Car11, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT);
         car1->setPosition(Vector(12, 0, 0));
         car1->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
@@ -1497,10 +1487,10 @@ namespace Aftr {
         worldLst->push_back(car1);
     }
     void GLViewSpeedRacer::OtherCarSkin1() {
-        std::string Car_Up = ManagerEnvironmentConfiguration::getLMM() + "/models/ford/FordCarDirection.dae";
-        std::string Car_Right = ManagerEnvironmentConfiguration::getLMM() + "/models/ford/LowPoly Muscle Cougar xr1970.dae";
-        std::string Car_Left = ManagerEnvironmentConfiguration::getLMM() + "/models/ford/CarDirectionOp.dae";
-        std::string Car_Down = ManagerEnvironmentConfiguration::getLMM() + "/models/ford/CarDirectionDown.dae";
+        std::string Car_Up(ManagerEnvironmentConfiguration::getLMM() + "/models/ford/FordCarDirection.dae");
+        std::string Car_Right(ManagerEnvironmentConfiguration::getLMM() + "/models/ford/LowPoly Muscle Cougar xr1970.dae");
+        std::string Car_Left(ManagerEnvironmentConfiguration::getLMM() + "/models/ford/CarDirectionOp.dae");
+        std::string Car_Down(ManagerEnvironmentConfiguration::getLMM() + "/models/ford/CarDirectionDown.dae");
 
         car_test = Car::New(Car_Up, Vector(20, 20, 20), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
         car_test->setPos(Vector(0, 0, 5));
@@ -1544,10 +1534,10 @@ namespace Aftr {
 
     }
     void GLViewSpeedRacer::OtherCarSkin2() {
-        std::string Car_Up = ManagerEnvironmentConfiguration::getLMM() + "/models/SportCar/CarTestRight.fbx";
-        std::string Car_Right = ManagerEnvironmentConfiguration::getLMM() + "/models/SportCar/CarTest.fbx";
-        std::string Car_Left = ManagerEnvironmentConfiguration::getLMM() + "/models/SportCar/CarTestLeft.fbx";
-        std::string Car_Down = ManagerEnvironmentConfiguration::getLMM() + "/models/SportCar/CarTestOtherWay.fbx";
+        std::string Car_Up(ManagerEnvironmentConfiguration::getLMM() + "/models/SportCar/CarTestRight.fbx");
+        std::string Car_Right(ManagerEnvironmentConfiguration::getLMM() + "/models/SportCar/CarTest.fbx");
+        std::string Car_Left(ManagerEnvironmentConfiguration::getLMM() + "/models/SportCar/CarTestLeft.fbx");
+        std::string Car_Down(ManagerEnvironmentConfiguration::getLMM() + "/models/SportCar/CarTestOtherWay.fbx");
 
         car_test = Car::New(Car_Up, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
         car_test->setPos(Vector(0, 0, 5));
@@ -1581,7 +1571,7 @@ namespace Aftr {
         car_new->isVisible = false;
         worldLst->push_back(car_new);
 
-        std::string Car11 = ManagerEnvironmentConfiguration::getLMM() + "/models/SportCar/CarTestOtherWay.fbx";
+        std::string Car11(ManagerEnvironmentConfiguration::getLMM() + "/models/SportCar/CarTestOtherWay.fbx");
         car1 = WO::New(Car11, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT);
         car1->setPosition(Vector(12, 0, 0));
         car1->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
@@ -1591,10 +1581,10 @@ namespace Aftr {
 
     }
     void GLViewSpeedRacer::OtherCarSkin3() {
-        std::string Car_Up = ManagerEnvironmentConfiguration::getLMM() + "/models/CyberTrunk/CyberTrunkFront.fbx";
-        std::string Car_Right = ManagerEnvironmentConfiguration::getLMM() + "/models/CyberTrunk/CyberTrunkLeft.fbx";
-        std::string Car_Left = ManagerEnvironmentConfiguration::getLMM() + "/models/CyberTrunk/CyberTrunkBack.fbx";
-        std::string Car_Down = ManagerEnvironmentConfiguration::getLMM() + "/models/CyberTrunk/CyberTrunkRight.fbx";
+        std::string Car_Up(ManagerEnvironmentConfiguration::getLMM() + "/models/CyberTrunk/CyberTrunkFront.fbx");
+        std::string Car_Right(ManagerEnvironmentConfiguration::getLMM() + "/models/CyberTrunk/CyberTrunkLeft.fbx");
+        std::string Car_Left(ManagerEnvironmentConfiguration::getLMM() + "/models/CyberTrunk/CyberTrunkBack.fbx");
+        std::string Car_Down(ManagerEnvironmentConfiguration::getLMM() + "/models/CyberTrunk/CyberTrunkRight.fbx");
 
         car_test = Car::New(Car_Up, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
         car_test->setPos(Vector(0, 0, 5));
@@ -1628,7 +1618,7 @@ namespace Aftr {
         car_new->isVisible = false;
         worldLst->push_back(car_new);
 
-        std::string Car11 = ManagerEnvironmentConfiguration::getLMM() + "/models/CyberTrunk/CyberTrunkRight.fbx";
+        std::string Car11(ManagerEnvironmentConfiguration::getLMM() + "/models/CyberTrunk/CyberTrunkRight.fbx");
         car1 = WO::New(Car11, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT);
         car1->setPosition(Vector(12, 0, 0));
         car1->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
@@ -1637,11 +1627,10 @@ namespace Aftr {
         worldLst->push_back(car1);
     }
     void GLViewSpeedRacer::spawnPlayer2() {
-
-        std::string carModelUp = ManagerEnvironmentConfiguration::getLMM() + "/models/Dodge/CarDodgeRight.fbx";
-        std::string carModelRight = ManagerEnvironmentConfiguration::getLMM() + "/models/Dodge/CarDogde.fbx";
-        std::string carModelLeft = ManagerEnvironmentConfiguration::getLMM() + "/models/Dodge/CarDodgeDown.fbx";
-        std::string carModelDown = ManagerEnvironmentConfiguration::getLMM() + "/models/Dodge/CarDodgeNew.fbx";
+        std::string carModelUp(ManagerEnvironmentConfiguration::getLMM() + "/models/Dodge/CarDodgeRight.fbx");
+        std::string carModelRight(ManagerEnvironmentConfiguration::getLMM() + "/models/Dodge/CarDogde.fbx");
+        std::string carModelLeft(ManagerEnvironmentConfiguration::getLMM() + "/models/Dodge/CarDodgeDown.fbx");
+        std::string carModelDown(ManagerEnvironmentConfiguration::getLMM() + "/models/Dodge/CarDodgeNew.fbx");
 
 
         // Initialize carMain
@@ -1691,10 +1680,10 @@ namespace Aftr {
 
     void GLViewSpeedRacer::spawnPlayer2Skin1() {
 
-        std::string carModelUp = ManagerEnvironmentConfiguration::getLMM() + "/models/ford/FordCarDirection.dae";
-        std::string carModelRight = ManagerEnvironmentConfiguration::getLMM() + "/models/ford/LowPoly Muscle Cougar xr1970.dae";
-        std::string carModelLeft = ManagerEnvironmentConfiguration::getLMM() + "/models/ford/CarDirectionOp.dae";
-        std::string carModelDown = ManagerEnvironmentConfiguration::getLMM() + "/models/ford/CarDirectionDown.dae";
+        std::string carModelUp(ManagerEnvironmentConfiguration::getLMM() + "/models/ford/FordCarDirection.dae");
+        std::string carModelRight(ManagerEnvironmentConfiguration::getLMM() + "/models/ford/LowPoly Muscle Cougar xr1970.dae");
+        std::string carModelLeft(ManagerEnvironmentConfiguration::getLMM() + "/models/ford/CarDirectionOp.dae");
+        std::string carModelDown(ManagerEnvironmentConfiguration::getLMM() + "/models/ford/CarDirectionDown.dae");
 
         // Initialize carMain
         carMain = Car::New(carModelUp, Vector(20, 20, 20), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
@@ -1732,7 +1721,7 @@ namespace Aftr {
         carDown->isVisible = false;
         worldLst->push_back(carDown);
 
-        std::string Car22 = ManagerEnvironmentConfiguration::getLMM() + "/models/ford/CarDirectionDown.dae";
+        std::string Car22(ManagerEnvironmentConfiguration::getLMM() + "/models/ford/CarDirectionDown.dae");
         car2 = WO::New(Car22, Vector(20, 20, 20), MESH_SHADING_TYPE::mstFLAT);
         car2->setPosition(Vector(12, 0, 0));
         car2->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
@@ -1743,10 +1732,10 @@ namespace Aftr {
 
     void GLViewSpeedRacer::spawnPlayer2Skin2() {
 
-        std::string carModelUp = ManagerEnvironmentConfiguration::getLMM() + "/models/SportCar/CarTestRight.fbx";
-        std::string carModelRight = ManagerEnvironmentConfiguration::getLMM() + "/models/SportCar/CarTest.fbx";
-        std::string carModelLeft = ManagerEnvironmentConfiguration::getLMM() + "/models/SportCar/CarTestLeft.fbx";
-        std::string carModelDown = ManagerEnvironmentConfiguration::getLMM() + "/models/SportCar/CarTestOtherWay.fbx";
+        std::string carModelUp(ManagerEnvironmentConfiguration::getLMM() + "/models/SportCar/CarTestRight.fbx");
+        std::string carModelRight(ManagerEnvironmentConfiguration::getLMM() + "/models/SportCar/CarTest.fbx");
+        std::string carModelLeft(ManagerEnvironmentConfiguration::getLMM() + "/models/SportCar/CarTestLeft.fbx");
+        std::string carModelDown(ManagerEnvironmentConfiguration::getLMM() + "/models/SportCar/CarTestOtherWay.fbx");
 
         // Initialize carMain
         carMain = Car::New(carModelUp, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT, pxPhysics, pxScene, spy_pose);
@@ -1776,7 +1765,7 @@ namespace Aftr {
         worldLst->push_back(carLeft);
 
         // Initialize carDown
-        std::string Car23 = ManagerEnvironmentConfiguration::getLMM() + "/models/SportCar/CarTestOtherWay.fbx";
+        std::string Car23(ManagerEnvironmentConfiguration::getLMM() + "/models/SportCar/CarTestOtherWay.fbx");
         car2 = WO::New(Car23, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT);
         car2->setPosition(Vector(12, 0, 0));
         car2->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
@@ -1786,10 +1775,10 @@ namespace Aftr {
     }
 
     void GLViewSpeedRacer::spawnPlayer2Skin3() {
-        std::string carModelUp = ManagerEnvironmentConfiguration::getLMM() + "/models/CyberTrunk/CyberTrunkFront.fbx";
-        std::string carModelRight = ManagerEnvironmentConfiguration::getLMM() + "/models/CyberTrunk/CyberTrunkLeft.fbx";
-        std::string carModelLeft = ManagerEnvironmentConfiguration::getLMM() + "/models/CyberTrunk/CyberTrunkBack.fbx";
-        std::string carModelDown = ManagerEnvironmentConfiguration::getLMM() + "/models/CyberTrunk/CyberTrunkRight.fbx";
+        std::string carModelUp(ManagerEnvironmentConfiguration::getLMM() + "/models/CyberTrunk/CyberTrunkFront.fbx");
+        std::string carModelRight(ManagerEnvironmentConfiguration::getLMM() + "/models/CyberTrunk/CyberTrunkLeft.fbx");
+        std::string carModelLeft(ManagerEnvironmentConfiguration::getLMM() + "/models/CyberTrunk/CyberTrunkBack.fbx");
+        std::string carModelDown(ManagerEnvironmentConfiguration::getLMM() + "/models/CyberTrunk/CyberTrunkRight.fbx");
 
 
         // Initialize carMain
@@ -1828,7 +1817,7 @@ namespace Aftr {
         carDown->isVisible = false;
         worldLst->push_back(carDown);
 
-        std::string Car22 = ManagerEnvironmentConfiguration::getLMM() + "/models/CyberTrunk/CyberTrunkRight.fbx";
+        std::string Car22(ManagerEnvironmentConfiguration::getLMM() + "/models/CyberTrunk/CyberTrunkRight.fbx");
         car2 = WO::New(Car22, Vector(0.1, 0.1, 0.1), MESH_SHADING_TYPE::mstFLAT);
         car2->setPosition(Vector(12, 0, 0));
         car2->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
@@ -1836,45 +1825,41 @@ namespace Aftr {
         car2->setLabel("car2");
         worldLst->push_back(car2);
     }
-
-    SDL_Texture* GLViewSpeedRacer::loadTexture(const std::string& path) {
-        SDL_Surface* surface = IMG_Load(path.c_str());
-        if (!surface) {
-            printf("Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError());
-            return nullptr;
-        }
-
-        SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-        SDL_FreeSurface(surface);
-
-        if (!texture) {
-            printf("Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
-        }
-
-        return texture;
-    }
     void GLViewSpeedRacer::resetCarPosition() {
         // Set the car's position to the initial position
         car_test->setPos(initialCarPosition);
         car_turn->setPos(Aftr::Vector(initialCarPosition.x + 12, initialCarPosition.y, initialCarPosition.z));
         car_other_side->setPos(Aftr::Vector(initialCarPosition.x - 12, initialCarPosition.y, initialCarPosition.z));
         car_new->setPos(Aftr::Vector(initialCarPosition.x, initialCarPosition.y + 12, initialCarPosition.z));
+        car1->setPosition(Vector(12, 0, 0));
 
         // Set the new car positions
         carMain->setPos(Aftr::Vector(initialCarPosition.x, initialCarPosition.y, initialCarPosition.z + 5));
         carRight->setPos(Aftr::Vector(initialCarPosition.x + 5, initialCarPosition.y, initialCarPosition.z + 5));
         carLeft->setPos(Aftr::Vector(initialCarPosition.x - 5, initialCarPosition.y, initialCarPosition.z + 5));
         carDown->setPos(Aftr::Vector(initialCarPosition.x, initialCarPosition.y, initialCarPosition.z + 5));
+        car2->setPosition(Vector(12, 0, 0));
 
-        // Reset visibility states
-        car_test->isVisible = true;
+        // Reset visibility states - Make all objects invisible
+        hideAllCarObjects();
+
+        // Optionally: Make some specific cars visible again
+        car1->isVisible = false;
+        car2->isVisible = false; // Set to false initially, will turn visible when needed
+    }
+
+    void GLViewSpeedRacer::hideAllCarObjects() {
+        // Make all car objects invisible
+        car_test->isVisible = false;
         car_turn->isVisible = false;
         car_other_side->isVisible = false;
         car_new->isVisible = false;
         carMain->isVisible = false;
         carRight->isVisible = false;
         carLeft->isVisible = false;
-        carDown->isVisible = true;
+        carDown->isVisible = false;
+        car1->isVisible = false;
+        car2->isVisible = false;
     }
 
     void GLViewSpeedRacer::updateActiveKeys(SDL_KeyCode keycode, bool state)
