@@ -29,7 +29,7 @@ public:
     physx::PxRigidDynamic* pxRigidDynamic = nullptr;
     void setSpeed(float speed);
     void setPhysicsQuality(float quality);
-   
+    irrklang::ISoundEngine* CrashSound = irrklang::createIrrKlangDevice();
 
 protected:
     Aftr::Vector p = Aftr::Vector(10, 15, 4);
@@ -41,7 +41,7 @@ protected:
     //physx::PxRigidDynamic* pxRigidDynamic = nullptr;
     bool physicsEnabled; // Flag to control whether physics is applied
     float currentSpeed;
-    irrklang::ISoundEngine* CrashSound = irrklang::createIrrKlangDevice();
+ 
     float previousVelocity; // To store the previous speed of the car
   Uint32 startTime; // Start time in milliseconds
   bool hasPlayedCrashSound;

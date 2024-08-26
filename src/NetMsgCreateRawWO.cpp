@@ -17,24 +17,30 @@
 
 using namespace Aftr;
 
+// Define the NetMsgBlackScreen class
 NetMsgMacroDefinition(NetMsgBlackScreen);
 
+// Constructor
 NetMsgBlackScreen::NetMsgBlackScreen() : NetMsg() {}
 
+// Destructor
 NetMsgBlackScreen::~NetMsgBlackScreen() {}
 
+// Serialize the message (no additional data needed)
 bool NetMsgBlackScreen::toStream(NetMessengerStreamBuffer& os) const {
-    return true; // No additional data for this message
+    return true;
 }
 
+// Deserialize the message (no additional data needed)
 bool NetMsgBlackScreen::fromStream(NetMessengerStreamBuffer& is) {
-    return true; // No additional data for this message
+    return true;
 }
 
+// Handle the arrival of the message
 void NetMsgBlackScreen::onMessageArrived() {
     GLViewSpeedRacer* glView = dynamic_cast<GLViewSpeedRacer*>(ManagerGLView::getGLView());
     if (glView) {
-        glView->showBlackScreen = false; // Remove the black screen
+        glView->showBlackScreen = false; // Remove the black screen in the receiving instance
     }
 }
 

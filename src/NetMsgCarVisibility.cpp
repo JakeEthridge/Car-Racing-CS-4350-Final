@@ -51,6 +51,8 @@ void NetMsgCarVisibility::onMessageArrived() {
             glView->car_turn->isVisible = false;
             glView->car_other_side->isVisible = false;
             glView->car_new->isVisible = true;
+            glView->car3->isVisible = false;
+            glView->car1->isVisible = false;
         }
     }
     if (carName == "carMain") {
@@ -76,5 +78,7 @@ void NetMsgCarVisibility::onMessageArrived() {
         glView->carRight->isVisible = false;
         glView->carLeft->isVisible = false;
         glView->carDown->isVisible = true;
+        glView->car2->isVisible = false;
+
     }
 }

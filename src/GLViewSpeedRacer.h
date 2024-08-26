@@ -65,14 +65,12 @@ namespace Aftr
         void hideAllCars();
         void hideAllCars2();
         void startLoadingProcess();
-        Car* tryLoadCarModel(const std::string& modelPath, const std::string& fallbackModelPath, int retryLimit);
-        WO* tryLoadWOModel(const std::string& modelPath, const std::string& fallbackModelPath, int retryLimit);
+
         Car* getVisibleCar1() {
             if (car_test && car_test->isVisible) return car_test;
             if (car_turn && car_turn->isVisible) return car_turn;
             if (car_other_side && car_other_side->isVisible) return car_other_side;
             if (car_new && car_new->isVisible) return car_new;
-            
             return nullptr;
         }
     
@@ -103,7 +101,8 @@ namespace Aftr
         Car* carRight;
         Car* carLeft;
         Car* carDown;
-     
+        bool isCrashMuted = false; // Global variable to track mute state
+
         int selectedSkin = 0; // Default value or initialize as needed
         // Simple linear interpolation function
         float lerp(float a, float b, float t) {

@@ -8,7 +8,7 @@ using namespace Aftr;
 NetMsgMacroDefinition(NetMsgSwitchTerrain);
 
 NetMsgSwitchTerrain::NetMsgSwitchTerrain()
-    : NetMsg(), useAnotherGrid(false), moveDownAmount(0.0f), rotateAmount(0.0f), moveNegativeXAmount(0.0f) {}
+    : NetMsg(), useAnotherGrid(false), moveDownAmount(0.0f), rotateAmount(0.0f), moveNegativeXAmount(0.0f), movePositiveXAmount(0.0f){}
 
 NetMsgSwitchTerrain::~NetMsgSwitchTerrain() {}
 
@@ -17,6 +17,7 @@ bool NetMsgSwitchTerrain::toStream(NetMessengerStreamBuffer& os) const {
     os << moveDownAmount;
     os << rotateAmount;
     os << moveNegativeXAmount;
+    os << movePositiveXAmount;
     return true;
 }
 
@@ -27,6 +28,7 @@ bool NetMsgSwitchTerrain::fromStream(NetMessengerStreamBuffer& is) {
     is >> moveDownAmount;
     is >> rotateAmount;
     is >> moveNegativeXAmount;
+    is >> movePositiveXAmount;
     return true;
 }
 
@@ -44,6 +46,7 @@ void NetMsgSwitchTerrain::onMessageArrived() {
         glView->moveTerrainDown(moveDownAmount);
         glView->rotateTerrain(rotateAmount);
         glView->moveTerrainNegativeX(moveNegativeXAmount);
+        glView->moveTerrainPositiveX(movePositiveXAmount);
     }
 }
 

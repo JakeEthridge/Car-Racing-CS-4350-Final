@@ -153,7 +153,9 @@ void Car::onUpdateWO()
     if (previousVelocity - currentSpeed > 10.0f) // Adjust the threshold as needed
     {
         if (CrashSound) {
+            CrashSound->setSoundVolume(0.01f);
             CrashSound->play2D("../../../modules/SpeedRacer/mm/sounds/crash.wav", false); // Play the crash sound once
+            
         }
     }
     previousVelocity = currentSpeed; // Update the previous velocity
