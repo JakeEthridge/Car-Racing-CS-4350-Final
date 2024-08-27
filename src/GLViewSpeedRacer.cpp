@@ -1825,6 +1825,8 @@ namespace Aftr {
         car2->setLabel("car2");
         worldLst->push_back(car2);
     }
+
+
     void GLViewSpeedRacer::resetCarPosition() {
         // Set the car's position to the initial position
         car_test->setPos(initialCarPosition);
