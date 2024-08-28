@@ -21,3 +21,8 @@ PhysX 5 Engine (https://github.com/NVIDIA-Omniverse/PhysX.git) -> Place this in 
      change clientside=1
 
 ** Game Description ** 
+![image](https://github.com/user-attachments/assets/a1f4a646-4b9b-4e36-803a-4ea34b5dcfab)
+
+Play SinglePlayer or Two Player car racing around several different terrains. 
+
+A time trial mode can be set or the user can enjoy casual play. 
